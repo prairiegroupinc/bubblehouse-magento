@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:ObjectManager/etc/config.xsd">
+    <type name="BubbleHouse\Integration\Model\Services\Auth\TokenAuthCreate">
+        <arguments>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Base64Json</argument>
+        </arguments>
+    </type>
+    <type name="Magento\Sales\Model\ResourceModel\Order">
+        <plugin name="BubbleHouse_Integration::order_status_change_plugin"
+                type="BubbleHouse\Integration\Plugin\Magento\Sales\Model\ResourceModel\Order\StatusChangePlugin"/>
+    </type>
+    <type name="Magento\Customer\Model\ResourceModel\Customer">
+        <plugin name="BubbleHouse_Integration::customer_change_plugin"
+                type="BubbleHouse\Integration\Plugin\Magento\Customer\Model\ResourceModel\Customer\CustomerChangePlugin"/>
+    </type>
+</config>
