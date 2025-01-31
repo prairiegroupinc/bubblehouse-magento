@@ -38,7 +38,7 @@ class StatusChangePlugin
         }
 
         if ($object->isDeleted() || $object->getOrigData('status') !== $object->getData('status')) {
-            $extractedData = $this->orderExtractor->extract($object, $result->isDeleted());
+            $extractedData = $this->orderExtractor->extract($object, (bool)$object->getData('is_deleted'));
             $this->bubbleHouseRequest->exportData(
                 BubbleHouseRequest::ORDER_EXPORT_TYPE,
                 $extractedData,

@@ -22,12 +22,11 @@ class ProductsMapper
 
         foreach ($orderItems as $orderedItem) {
             $mappedItem = [];
-            $mappedItem['quantity'] = $orderedItem->getQtyOrdered();
+            $mappedItem['quantity'] = (int)$orderedItem->getQtyOrdered();
             $mappedItem['amount_full'] = $this->monetaryMapper->map($orderedItem->getPriceInclTax());
             $mappedItem['amount_spent'] = $this->monetaryMapper->map(
                 (float)$orderedItem->getPriceInclTax() - (float)$orderedItem->getDiscountAmount()
             );
-            $mappedItem['canceled'] = (int)$orderedItem->getQtyOrdered() !== (int)$orderedItem->getQtyCanceled();
             $mappedItem['product'] = $this->mapProduct($orderedItem);
             $mappedItems[] = $mappedItem;
         }

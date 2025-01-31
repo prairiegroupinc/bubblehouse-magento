@@ -17,7 +17,8 @@ class OrderExtractor
         private readonly StoreManagerInterface $storeManager,
         private readonly CustomerExtractor $customerExtractor,
         private readonly ProductsMapper $productsMapper,
-        private readonly MonetaryMapper $monetaryMapper
+        private readonly MonetaryMapper $monetaryMapper,
+        private readonly TimeMapper $timeMapper
     ) {
     }
 
@@ -26,18 +27,18 @@ class OrderExtractor
         $store = $this->storeManager->getStore($order->getStoreId());
         $extractedData = [];
         $extractedData['id'] = $order->getEntityId();
-        $extractedData['created_at'] = $order->getCreatedAt();
-        $extractedData['update_time'] = $order->getUpdatedAt();
+        $extractedData['order_time'] = $this->timeMapper->map($order->getCreatedAt());
+        $extractedData['update_time'] = $this->timeMapper->map($order->getUpdatedAt());
         $extractedData['status'] = $this->statusMapper->mapStatus($order->getStatus());
         $extractedData['customer'] = $this->getCustomerData(
             $order->getCustomerEmail(),
-            $order->getStoreId()
+            (int)$order->getStoreId()
         );
         $extractedData['store_location'] = 'Website ID: ' . $store->getWebsiteId()
             . ' -> Store ID: ' . $store->getName();
-        $extractedData['amount_full'] = $this->monetaryMapper->map($order->getBaseGrandTotal());
+        $extractedData['amount_full'] = $this->monetaryMapper->map((float)$order->getBaseGrandTotal());
         $extractedData['amount_spent'] = $this->monetaryMapper->map(
-            $order->getBaseGrandTotal() - abs($order->getDiscountAmount() ?? 0.0)
+            (float)$order->getBaseGrandTotal() - abs((float)$order->getDiscountAmount())
         );
         $extractedData['items'] = $this->getOrderLines($order);
 
