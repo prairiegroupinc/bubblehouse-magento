@@ -11,7 +11,6 @@ use Magento\Sales\Model\Order;
 class ProductsMapper
 {
     public function __construct(
-        private readonly MonetaryMapper $monetaryMapper,
         private readonly ProductRepositoryInterface $productRepository
     ) {
     }
@@ -23,8 +22,8 @@ class ProductsMapper
         foreach ($orderItems as $orderedItem) {
             $mappedItem = [];
             $mappedItem['quantity'] = (int)$orderedItem->getQtyOrdered();
-            $mappedItem['amount_full'] = $this->monetaryMapper->map($orderedItem->getPriceInclTax());
-            $mappedItem['amount_spent'] = $this->monetaryMapper->map(
+            $mappedItem['amount_full'] = MonetaryMapper::map($orderedItem->getPriceInclTax());
+            $mappedItem['amount_spent'] = MonetaryMapper::map(
                 (float)$orderedItem->getPriceInclTax() - (float)$orderedItem->getDiscountAmount()
             );
             $mappedItem['product'] = $this->mapProduct($orderedItem);

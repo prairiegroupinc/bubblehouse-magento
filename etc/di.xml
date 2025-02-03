@@ -14,4 +14,8 @@
         <plugin name="BubbleHouse_Integration::customer_change_plugin"
                 type="BubbleHouse\Integration\Plugin\Magento\Customer\Model\ResourceModel\Customer\CustomerChangePlugin"/>
     </type>
+    <preference for="BubbleHouse\Integration\Api\Data\DiscountDataInterface"
+                type="BubbleHouse\Integration\Model\Data\DiscountData"/>
+    <preference for="BubbleHouse\Integration\Api\CreateDiscount4Interface"
+                type="BubbleHouse\Integration\Model\Services\Discount\Create"/>
 </config>
