@@ -7,8 +7,8 @@ namespace BubbleHouse\Integration\Api;
 interface CreateDiscount4Interface
 {
     /**
-     * @param \code\BubbleHouse\Integration\Api\Data\DiscountDataInterface $discountData
+     * @param \BubbleHouse\Integration\Api\Data\DiscountDataInterface $discountData
      * @return void
      */
-    public function createDiscount(\code\BubbleHouse\Integration\Api\Data\DiscountDataInterface $discountData): void;
+    public function createDiscount(\BubbleHouse\Integration\Api\Data\DiscountDataInterface $discountData): void;
 }
