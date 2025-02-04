@@ -4,13 +4,11 @@
     <acl>
         <resources>
             <resource id="Magento_Backend::admin">
-                <resource id="Magento_Backend::system">
-                    <resource id="BubbleHouse_Integration::management" title="BubbleHouse Integration" translate="title" sortOrder="555">
-                        <resource id="BubbleHouse_Integration::config" title="BubbleHouse Configurations" translate="title" sortOrder="10"/>
-                        <resource id="BubbleHouse_Integration::sales" title="BubbleHouse OrderManagement" translate="title" sortOrder="20"/>
-                        <resource id="BubbleHouse_Integration::customer" title="BubbleHouse CustomerManagement" translate="title" sortOrder="30"/>
-                        <resource id="BubbleHouse_Integration::sales_rules" title="BubbleHouse SalesRules" translate="title" sortOrder="40"/>
-                    </resource>
+                <resource id="BubbleHouse_Integration::management" title="BubbleHouse Integration" translate="title" sortOrder="555">
+                    <resource id="BubbleHouse_Integration::config" title="BubbleHouse Configurations" translate="title" sortOrder="10"/>
+                    <resource id="BubbleHouse_Integration::sales" title="BubbleHouse OrderManagement" translate="title" sortOrder="20"/>
+                    <resource id="BubbleHouse_Integration::customer" title="BubbleHouse CustomerManagement" translate="title" sortOrder="30"/>
+                    <resource id="BubbleHouse_Integration::sales_rules" title="BubbleHouse SalesRules" translate="title" sortOrder="40"/>
                 </resource>
             </resource>
         </resources>
