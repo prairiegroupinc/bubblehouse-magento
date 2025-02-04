@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Store:etc/config.xsd">
+    <default>
+        <bubblehouse>
+            <general>
+                <enabled>1</enabled>
+                <debug>1</debug>
+                <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <shared_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
+                <token_expiration_time>5</token_expiration_time>
+                <customer_export_enbled>1</customer_export_enbled>
+                <order_export_enabled>1</order_export_enabled>
+            </general>
+        </bubblehouse>
+    </default>
+</config>

@@ -1,0 +1,47 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="bubblehouse" translate="label" sortOrder="999">
+            <label>BubbleHouse</label>
+        </tab>
+        <section id="bubblehouse" translate="label" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>BubbleHouse Configuration</label>
+            <tab>bubblehouse</tab>
+            <resource>BubbleHouse_Integration::configuration</resource>
+            <group id="general" translate="label" type="text" sortOrder="10" showInDefault="1"  showInWebsite="1" showInStore="1">
+                <label>General Settings</label>
+                <field id="enabled" translate="label" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>Enable Integration</label>
+                </field>
+                <field id="debug" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>Enable Debug Mode</label>
+                </field>
+                <field id="api_key" translate="label" type="obscure" sortOrder="30" showInDefault="1"  showInWebsite="1" showInStore="1">
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <label>BubbleHouse Key ID (KID)</label>
+                </field>
+                <field id="shared_secret" translate="label" type="obscure" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <backend_model>Magento\Config\Model\Config\Backend\Encrypted</backend_model>
+                    <label>BubbleHouse Shared Secret</label>
+                </field>
+                <field id="token_expiration_time" translate="label" type="text" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Token Expiration Time (min)</label>
+                </field>
+                <field id="shop_slug" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BubbleHouse Shop Slug</label>
+                </field>
+                <field id="order_export_enabled" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>BubbleHouse Order Export Enabled</label>
+                </field> <field id="customer_export_enbled" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>BubbleHouse Customer Export Enabled</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>
