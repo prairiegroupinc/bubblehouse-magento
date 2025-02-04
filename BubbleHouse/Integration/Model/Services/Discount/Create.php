@@ -39,42 +39,42 @@ class Create implements CreateDiscount4Interface
     ) {
     }
 
-    public function createDiscount(array $discountData): void
+    public function createDiscount(DiscountDataInterface $CreateDiscount4): void
     {
         /** @var RuleInterface $cartPriceRule */
         $cartPriceRule = $this->cartPriceRuleFactory->create();
         $availableWebsites = $this->getAvailableWebsiteIds();
-        $customerGroupIds = $this->getAvailableCustomerGroupIds((int)$discountData->getCustomerId());
-        $cartPriceRule->setName($discountData->getTitle());
+        $customerGroupIds = $this->getAvailableCustomerGroupIds((int)$CreateDiscount4->getCustomerId());
+        $cartPriceRule->setName($CreateDiscount4->getTitle());
         $cartPriceRule->setIsActive(true);
         $cartPriceRule->setCouponType(RuleInterface::COUPON_TYPE_SPECIFIC_COUPON);
         $cartPriceRule->setCustomerGroupIds($customerGroupIds);
         $cartPriceRule->setWebsiteIds($availableWebsites);
         $cartPriceRule->setFromDate(date(TimeMapper::TIME_FORMAT, time()));
-        $cartPriceRule->setToDate(TimeMapper::unmap($discountData->getEndTime()));
+        $cartPriceRule->setToDate(TimeMapper::unmap($CreateDiscount4->getEndTime()));
         // Set the usage limit per customer.
-        $cartPriceRule->setUsesPerCoupon($discountData->getMaxUses());
+        $cartPriceRule->setUsesPerCoupon($CreateDiscount4->getMaxUses());
         $cartPriceRule->setUsesPerCustomer(1);
-        $cartPriceRule->setData('coupon_code', $discountData->getCode());
+        $cartPriceRule->setData('coupon_code', $CreateDiscount4->getCode());
         $cartPriceRule->setUseAutoGeneration(false);
         $cartPriceRule->setSimpleFreeShipping('0')
             ->setApplyToShipping('0');
         $cartPriceRule->setDescription(
-            implode(' ,', $discountData->getSubjectSlugs())
+            implode(' ,', $CreateDiscount4->getSubjectSlugs())
         );
 
         // amount or percentage
-        if ($discountData->getAmount()) {
+        if ($CreateDiscount4->getAmount()) {
             $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_FIXED_AMOUNT);
-            $cartPriceRule->setDiscountAmount(MonetaryMapper::unmap($discountData->getAmount()));
-        } else if ($discountData->getPercentage()) {
+            $cartPriceRule->setDiscountAmount(MonetaryMapper::unmap($CreateDiscount4->getAmount()));
+        } else if ($CreateDiscount4->getPercentage()) {
             $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_BY_PERCENT);
-            $cartPriceRule->setDiscountAmount((int)$discountData->getPercentage()/100);
+            $cartPriceRule->setDiscountAmount((int)$CreateDiscount4->getPercentage()/100);
         }
 
         // set conditions and actions
-        if (!empty($discountData->getProductIds())) {
-            if ($discountData->getIsPerProduct()) {
+        if (!empty($CreateDiscount4->getProductIds())) {
+            if ($CreateDiscount4->getIsPerProduct()) {
                 $cartPriceRule->setCondition(
                     $this->conditionInterfaceFactory->create()->setConditionType(
                         Found::class
@@ -90,7 +90,7 @@ class Create implements CreateDiscount4Interface
                                 'sku'
                             )->setOperator(
                                 '()'
-                            )->setValue($discountData->getProductIds())
+                            )->setValue($CreateDiscount4->getProductIds())
                         ]
                     )
                 );
@@ -110,14 +110,14 @@ class Create implements CreateDiscount4Interface
                                 'sku'
                             )->setOperator(
                                 '()'
-                            )->setValue($discountData->getProductIds())
+                            )->setValue($CreateDiscount4->getProductIds())
                         ]
                     )
                 );
             }
         }
 
-        if (!empty($discountData->getCollectionIds())) {
+        if (!empty($CreateDiscount4->getCollectionIds())) {
             $cartPriceRule->setCondition(
                 $this->conditionInterfaceFactory->create()->setConditionType(
                     Combine::class
@@ -133,7 +133,7 @@ class Create implements CreateDiscount4Interface
                             'category_ids'
                         )->setOperator(
                             '()'
-                        )->setValue($discountData->getProductIds())
+                        )->setValue($CreateDiscount4->getProductIds())
                     ]
                 )
             );
