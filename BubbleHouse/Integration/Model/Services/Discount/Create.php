@@ -156,7 +156,7 @@ class Create implements CreateDiscount4Interface
         $collection->addFieldToSelect('customer_group_id');
         $collection->join(
             $collection->getTable('customer_entity'),
-            'customer_entity.group_id=customer_group.customer_group_id'
+            'customer_entity.group_id=main_table.customer_group_id'
         )->addFieldToFilter('entity_id', ['eq' => $customerId]);
 
         return $collection->getAllIds();
