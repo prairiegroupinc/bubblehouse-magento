@@ -39,7 +39,7 @@ class Create implements CreateDiscount4Interface
     ) {
     }
 
-    public function createDiscount(DiscountDataInterface $discountData): void
+    public function createDiscount(array $discountData): void
     {
         /** @var RuleInterface $cartPriceRule */
         $cartPriceRule = $this->cartPriceRuleFactory->create();

@@ -4,7 +4,7 @@
     <route url="/V1/webhooks/CreateDiscount4" method="POST">
         <service class="BubbleHouse\Integration\Api\CreateDiscount4Interface" method="createDiscount" />
         <resources>
-            <resource ref="BubbleHouse_Integration::sales_rules" />
+            <resource ref="BubbleHouse_Integration::management" />
         </resources>
     </route>
 </routes>
