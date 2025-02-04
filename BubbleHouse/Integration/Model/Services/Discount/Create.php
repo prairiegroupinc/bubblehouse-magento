@@ -14,14 +14,14 @@ use Magento\Customer\Model\ResourceModel\Group\CollectionFactory as CustomerGrou
 use Magento\Framework\App\State;
 use Magento\SalesRule\Api\Data\ConditionInterfaceFactory;
 use Magento\SalesRule\Api\Data\RuleInterface;
+use Magento\SalesRule\Api\Data\CouponInterfaceFactory;
 use Magento\SalesRule\Api\Data\RuleInterfaceFactory;
 use Magento\SalesRule\Api\RuleRepositoryInterface;
+use Magento\SalesRule\Model\ResourceModel\Coupon as CouponResource;
+use Magento\SalesRule\Model\Rule\Condition\Address;
 use Magento\SalesRule\Model\Rule\Condition\Combine;
-use Magento\SalesRule\Model\Rule\Condition\CombineFactory;
 use Magento\SalesRule\Model\Rule\Condition\Product;
 use Magento\SalesRule\Model\Rule\Condition\Product\Found;
-use Magento\SalesRule\Model\Rule\Condition\Product\FoundFactory;
-use Magento\SalesRule\Model\Rule\Condition\ProductFactory;
 use Magento\Store\Model\StoreManagerInterface;
 
 class Create implements CreateDiscount4Interface
@@ -32,10 +32,9 @@ class Create implements CreateDiscount4Interface
         private readonly RuleInterfaceFactory $cartPriceRuleFactory,
         private readonly StoreManagerInterface $storeManager,
         private readonly CustomerGroupCollectionFactory $customerGroupCollectionFactory,
-        private readonly FoundFactory $foundFactory,
-        private readonly CombineFactory $combineFactory,
-        private readonly ProductFactory $productFactory,
-        private readonly ConditionInterfaceFactory $conditionInterfaceFactory
+        private readonly ConditionInterfaceFactory $conditionInterfaceFactory,
+        private readonly CouponInterfaceFactory $couponInterfaceFactory,
+        private readonly CouponResource $couponResource
     ) {
     }
 
@@ -72,12 +71,34 @@ class Create implements CreateDiscount4Interface
             $cartPriceRule->setDiscountAmount((int)$CreateDiscount4->getPercentage()/100);
         }
 
+        if (!empty($CreateDiscount4->getMinOrderAmount())) {
+            $cartPriceRule->setCondition(
+                $this->conditionInterfaceFactory->create()->setConditionType(
+                    Combine::class
+                )->setAggregatorType(
+                    'all'
+                )->setValue(
+                    1
+                )->setConditions(
+                    [
+                        0 => $this->conditionInterfaceFactory->create()->setConditionType(
+                            Address::class
+                        )->setAttributeName(
+                            'base_subtotal'
+                        )->setOperator(
+                            '>='
+                        )->setValue($CreateDiscount4->getMinOrderAmount())
+                    ]
+                )
+            );
+        }
+
         // set conditions and actions
         if (!empty($CreateDiscount4->getProductIds())) {
-            if ($CreateDiscount4->getIsPerProduct()) {
+            if (!$CreateDiscount4->getIsPerProduct()) {
                 $cartPriceRule->setCondition(
                     $this->conditionInterfaceFactory->create()->setConditionType(
-                        Found::class
+                        Combine::class
                     )->setAggregatorType(
                         'all'
                     )->setValue(
@@ -97,11 +118,30 @@ class Create implements CreateDiscount4Interface
             } else {
                 $cartPriceRule->setCondition(
                     $this->conditionInterfaceFactory->create()->setConditionType(
-                        Combine::class
+                        Found::class
                     )->setAggregatorType(
                         'all'
                     )->setValue(
                         1
+                    )->setConditions(
+                        [
+                            0 => $this->conditionInterfaceFactory->create()->setConditionType(
+                                Product::class
+                            )->setAttributeName(
+                                'sku'
+                            )->setOperator(
+                                '()'
+                            )->setValue($CreateDiscount4->getProductIds())
+                        ]
+                    )
+                );
+                $cartPriceRule->setActionCondition(
+                    $this->conditionInterfaceFactory->create()->setConditionType(
+                        Combine::class
+                    )->setValue(
+                        1
+                    )->setAggregatorType(
+                        'all'
                     )->setConditions(
                         [
                             0 => $this->conditionInterfaceFactory->create()->setConditionType(
@@ -146,18 +186,26 @@ class Create implements CreateDiscount4Interface
             [$cartPriceRule]
         );
 
-        $ruleId = (int) $savedCartPriceRule->getRuleId();
+        // create coupon
+        $coupon = $this->couponInterfaceFactory->create();
+        $coupon->setRuleId($savedCartPriceRule->getRuleId());
+        $coupon->setCode($CreateDiscount4->getCode());
+        $coupon->setIsPrimary(true);
+        $this->couponResource->save($coupon);
     }
 
-    private function getAvailableCustomerGroupIds(int $customerId): array
+    private function getAvailableCustomerGroupIds(?int $customerId): array
     {
         /** @var CustomerGroupCollection $collection */
         $collection = $this->customerGroupCollectionFactory->create();
         $collection->addFieldToSelect('customer_group_id');
-        $collection->join(
-            $collection->getTable('customer_entity'),
-            'customer_entity.group_id=main_table.customer_group_id'
-        )->addFieldToFilter('entity_id', ['eq' => $customerId]);
+
+        if ($customerId) {
+            $collection->join(
+                $collection->getTable('customer_entity'),
+                'customer_entity.group_id=main_table.customer_group_id'
+            )->addFieldToFilter('entity_id', ['eq' => $customerId]);
+        }
 
         return $collection->getAllIds();
     }

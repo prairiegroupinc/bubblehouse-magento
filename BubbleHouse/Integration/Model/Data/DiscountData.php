@@ -310,11 +310,11 @@ class DiscountData extends DataObject implements DiscountDataInterface
 
     public function getSubjectType(): string
     {
-        // TODO: Implement getSubjectType() method.
+        return $this->getData(self::SUBJECT_TYPE);
     }
 
     public function setSubjectType(string $subjectType): void
     {
-        // TODO: Implement setSubjectType() method.
+        $this->setData(self::SUBJECT_TYPE, $subjectType);
     }
 }
