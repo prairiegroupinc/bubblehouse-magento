@@ -22,8 +22,8 @@ class TokenAuthCreate
         private readonly TimezoneInterface $timezone
     ) {
     }
-    public function signBubblehouseToken($subject, $keyId, $keySecretInBase64, $validityInSeconds) {
-        $nowUnix = time(); // Current Unix timestamp
+    public function signBubblehouseToken($subject, $keyId, $keySecretInBase64, $validityInSeconds = null) {
+        $nowUnix = time();
 
         // JWT Header
         $header = json_encode(['typ' => 'JWT', 'alg' => 'HS256', 'kid' => $keyId]);
@@ -59,10 +59,14 @@ class TokenAuthCreate
 
     public function createShopToken(
         $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        string $customerId = null
     ): string {
+        $shopSlug = $customerId !== null
+            ? $this->configProvider->getShopSlug($scopeType, $scopeCode) . '/' . $customerId
+            : $this->configProvider->getShopSlug($scopeType, $scopeCode);
         return $this->signBubblehouseToken(
-            $this->configProvider->getShopSlug($scopeType, $scopeCode),
+            $shopSlug,
             $this->configProvider->getKid($scopeType, $scopeCode),
             $this->configProvider->getSharedSecret($scopeType, $scopeCode),
             (int)$this->configProvider->getTokenExpirationTime($scopeType, $scopeCode) * 60

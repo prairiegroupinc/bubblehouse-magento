@@ -18,4 +18,9 @@
                 type="BubbleHouse\Integration\Model\Data\DiscountData"/>
     <preference for="BubbleHouse\Integration\Api\CreateDiscount4Interface"
                 type="BubbleHouse\Integration\Model\Services\Discount\Create"/>
+    <type name="BubbleHouse\Integration\ViewModel\TokenProvider">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
 </config>

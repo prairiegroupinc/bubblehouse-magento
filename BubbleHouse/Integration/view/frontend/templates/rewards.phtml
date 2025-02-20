@@ -1,0 +1,74 @@
+<?php
+declare(strict_types=1);
+/** @var \Magento\Framework\View\Element\Template $block */
+/** @var \BubbleHouse\Integration\ViewModel\TokenProvider $tokenProvider */
+/** @var \Magento\Framework\Escaper $escaper */
+/** @var \Magento\Framework\View\Helper\SecureHtmlRenderer $secureRenderer */
+$tokenProvider = $block->getData('token_provider'); ?>
+
+<?php if ($tokenProvider->isEnabled() && $tokenProvider->isCustomerLoggedIn()) : ?>
+    <iframe id="bhpage"
+            src="https://app.bubblehouse.com/blocks/v2023061/<?= $escaper->escapeHtmlAttr($tokenProvider->getShopSlug()) ?>/Rewards7?instance=bhpage&auth=<?= $escaper->escapeHtmlAttr($tokenProvider->getCustomerToken()) ?>"
+            sandbox="allow-top-navigation allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+            allow="clipboard-write"
+            style="border: 0; width: 100%; height: 1500px;"></iframe>
+<?php $scriptContent = "window.addEventListener('message', function (ev) {
+  let data = ev.data;
+  if (!data) return;
+  data.instance = 'bhpage';
+  let call = data.bubblehouseBlockClientCall;
+  if (!call) return;
+  let instance = data.instance;
+  let el = document.getElementById(instance);
+  el.dispatchEvent(new CustomEvent('bhclient:' + call, { detail: data, bubbles: true }));
+});
+
+document.addEventListener('bhclient:Resize1', function (ev) {
+  ev.target.style.height = ev.detail.height + 'px';
+});
+
+document.addEventListener('bhclient:OpenPopup1', function (ev) {
+  openPopup(ev.detail);
+});
+
+let lastInstanceId = 0;
+
+function openPopup(options) {
+  let instance = 'popup-bhpage-' + ++lastInstanceId;
+
+  let url = new URL(options.url);
+  url.searchParams.set('instance', instance);
+
+  let dialog = document.createElement('dialog');
+  dialog.id = instance + '-dialog';
+  dialog.style = options.dialogStyle;
+  dialog.addEventListener('click', closeOnClickOutside)
+  dialog.addEventListener('close', function () { document.body.removeChild(dialog) })
+
+  let blockFrame = document.createElement('iframe');
+  blockFrame.id = instance;
+  blockFrame.src = url.toString();
+  blockFrame.style = options.frameStyle;
+  blockFrame.addEventListener('bhclient:ClosePopup1', function () { dialog.close() });
+  dialog.appendChild(blockFrame);
+
+  document.body.appendChild(dialog);
+
+  dialog.showModal();
+
+  function closeOnClickOutside(ev) {
+    const d = dialog.getBoundingClientRect()
+    if (ev.clientX < d.left || ev.clientX > d.right || ev.clientY < d.top || ev.clientY > d.bottom) {
+      dialog.close()
+    }
+  }
+}"; ?>
+<?= htmlspecialchars_decode($secureRenderer->renderTag(
+    'script',
+        [],
+        $scriptContent
+    )) ?>
+
+<?php else : ?>
+<?= $escaper->escapeHtml(__('Enable BubbleHouse or Login')) ?>
+<?php endif;
