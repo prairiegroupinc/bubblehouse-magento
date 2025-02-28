@@ -4,28 +4,28 @@
         <!-- Allow scripts from app.bubblehouse.com -->
         <policy id="script-src">
             <values>
-                <value id="app_bubblehouse" type="host">https://app.bubblehouse.com</value>
+                <value id="app_bubblehouse-script" type="host">https://app.bubblehouse.com</value>
             </values>
         </policy>
 
         <!-- Allow images from app.bubblehouse.com -->
         <policy id="img-src">
             <values>
-                <value id="app_bubblehouse" type="host">https://app.bubblehouse.com</value>
+                <value id="app_bubblehouse-img" type="host">https://app.bubblehouse.com</value>
             </values>
         </policy>
 
         <!-- Allow styles from app.bubblehouse.com -->
         <policy id="style-src">
             <values>
-                <value id="app_bubblehouse" type="host">https://app.bubblehouse.com</value>
+                <value id="app_bubblehouse-style" type="host">https://app.bubblehouse.com</value>
             </values>
         </policy>
 
         <!-- Allow connections (AJAX, WebSockets) to app.bubblehouse.com -->
         <policy id="connect-src">
             <values>
-                <value id="app_bubblehouse" type="host">https://app.bubblehouse.com</value>
+                <value id="app_bubblehouse-connect" type="host">https://app.bubblehouse.com</value>
             </values>
         </policy>
     </policies>
