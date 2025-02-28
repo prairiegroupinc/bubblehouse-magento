@@ -14,6 +14,7 @@ class ProductsMapper
         private readonly ProductRepositoryInterface $productRepository
     ) {
     }
+
     public function mapOrderItems(Order $order): array
     {
         $mappedItems = [];

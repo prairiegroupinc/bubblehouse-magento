@@ -8,10 +8,12 @@ use BubbleHouse\Integration\Api\CreateDiscount4Interface;
 use BubbleHouse\Integration\Api\Data\DiscountDataInterface;
 use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
 use BubbleHouse\Integration\Model\EportData\Order\TimeMapper;
+use Exception;
 use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Customer\Model\ResourceModel\Group\Collection as CustomerGroupCollection;
 use Magento\Customer\Model\ResourceModel\Group\CollectionFactory as CustomerGroupCollectionFactory;
 use Magento\Framework\App\State;
+use Magento\Framework\Exception\AlreadyExistsException;
 use Magento\SalesRule\Api\Data\ConditionInterfaceFactory;
 use Magento\SalesRule\Api\Data\RuleInterface;
 use Magento\SalesRule\Api\Data\CouponInterfaceFactory;
@@ -38,7 +40,12 @@ class Create implements CreateDiscount4Interface
     ) {
     }
 
-    public function createDiscount(DiscountDataInterface $CreateDiscount4): void
+    /**
+     * @param DiscountDataInterface $CreateDiscount4
+     * @return void
+     * @throws AlreadyExistsException|Exception
+     */
+    public function execute(DiscountDataInterface $CreateDiscount4): void
     {
         /** @var RuleInterface $cartPriceRule */
         $cartPriceRule = $this->cartPriceRuleFactory->create();

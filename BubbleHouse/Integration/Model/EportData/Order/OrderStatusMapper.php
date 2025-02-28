@@ -29,7 +29,7 @@ class OrderStatusMapper
         'canceled'
     ];
 
-    public function mapStatus(string $orderStatus): string
+    public static function mapStatus(string $orderStatus): string
     {
         $mappedValue = '';
 

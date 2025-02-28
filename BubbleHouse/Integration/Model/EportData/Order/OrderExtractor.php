@@ -12,10 +12,8 @@ use Magento\Store\Model\StoreManagerInterface;
 class OrderExtractor
 {
     public function __construct(
-        private readonly OrderStatusMapper $statusMapper,
         private readonly CustomerRepositoryInterface $customerRepository,
         private readonly StoreManagerInterface $storeManager,
-        private readonly CustomerExtractor $customerExtractor,
         private readonly ProductsMapper $productsMapper
     ) {
     }
@@ -27,7 +25,7 @@ class OrderExtractor
         $extractedData['id'] = $order->getEntityId();
         $extractedData['order_time'] = TimeMapper::map($order->getCreatedAt());
         $extractedData['update_time'] = TimeMapper::map($order->getUpdatedAt());
-        $extractedData['status'] = $this->statusMapper->mapStatus($order->getStatus());
+        $extractedData['status'] = OrderStatusMapper::mapStatus($order->getStatus());
         $extractedData['customer'] = $this->getCustomerData(
             $order->getCustomerEmail(),
             (int)$order->getStoreId()
@@ -52,7 +50,7 @@ class OrderExtractor
         $store = $this->storeManager->getStore($storeId);
         $customer = $this->customerRepository->get($customerEmail, $store->getWebsiteId());
 
-        return $this->customerExtractor->extract($customer);
+        return CustomerExtractor::extract($customer);
     }
 
     private function getOrderLines(OrderInterface $order): array

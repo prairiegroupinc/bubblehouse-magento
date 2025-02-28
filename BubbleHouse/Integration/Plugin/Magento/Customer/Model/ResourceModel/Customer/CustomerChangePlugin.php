@@ -14,7 +14,6 @@ class CustomerChangePlugin
 {
     public function __construct(
         private readonly BubbleHouseRequest $bubbleHouseRequest,
-        private readonly CustomerExtractor $customerExtractor,
         private readonly ConfigProvider $configProvider
     ) {
     }
@@ -37,7 +36,7 @@ class CustomerChangePlugin
         }
 
         if ($object->isDeleted() || $this->shouldTrackChanges($object)) {
-            $extractedData = $this->customerExtractor->extract($object->getDataModel());
+            $extractedData = CustomerExtractor::extract($object->getDataModel());
             $this->bubbleHouseRequest->exportData(
                 BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
                 $extractedData,
