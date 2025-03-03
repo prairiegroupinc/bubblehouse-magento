@@ -20,11 +20,11 @@ abstract class Index  implements CsrfAwareActionInterface, HttpPostActionInterfa
     private const AUTH_HEADER = 'authorization';
 
     public function __construct(
-        protected readonly TokenProviderInterface $tokenProvider,
-        protected readonly Request $request,
-        protected readonly JsonFactory $jsonFactory,
-        protected readonly SerializerInterface $serializer,
-        private readonly LoggerInterface $logger
+        protected TokenProviderInterface $tokenProvider,
+        protected Request $request,
+        protected JsonFactory $jsonFactory,
+        protected SerializerInterface $serializer,
+        protected LoggerInterface $logger
     ) {
     }
 
