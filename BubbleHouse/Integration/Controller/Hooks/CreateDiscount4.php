@@ -46,7 +46,7 @@ class CreateDiscount4 extends Index
         $this->logger->critical($this->serializer->unserialize($this->request->getContent()));
         $this->logger->critical($this->serializer->unserialize($this->request->getHeaders()));
 
-        if ($this->validateToken()) {
+//        if ($this->validateToken()) {
             $couponData = $this->serializer->unserialize($this->request->getContent());
             $discount = $this->discountInterfaceFactory->create();
             $discount->setData($couponData);
@@ -64,10 +64,10 @@ class CreateDiscount4 extends Index
             $result->setHttpResponseCode(201);
             $result->setData(['ok' => true]);
 
-        } else {
-            $result->setHttpResponseCode(403);
-            $result->setData(['error' => 'Not valid access token']);
-        }
+//        } else {
+//            $result->setHttpResponseCode(403);
+//            $result->setData(['error' => 'Not valid access token']);
+//        }
 
         return $result;
     }

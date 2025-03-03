@@ -20,7 +20,7 @@ class Hello1 extends Index
         $this->logger->critical($this->serializer->unserialize($this->request->getContent()));
         $this->logger->critical($this->serializer->unserialize($this->request->getHeaders()));
 
-        if ($this->validateToken()) {
+//        if ($this->validateToken()) {
             $content = $this->serializer->unserialize($this->request->getContent());
             $magic = $content[self::MAGIC] ?? null;
 
@@ -32,7 +32,7 @@ class Hello1 extends Index
                     'hooks' => $hooks
                 ]);
             }
-        }
+//        }
 
         $result->setHttpResponseCode(404);
         $result->setData(['error' => 'Not found']);
