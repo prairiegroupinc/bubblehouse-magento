@@ -17,6 +17,8 @@ class Hello1 extends Index
     public function execute(): ResultInterface
     {
         $result = $this->jsonFactory->create();
+        $this->logger->critical($this->serializer->unserialize($this->request->getContent()));
+        $this->logger->critical($this->serializer->unserialize($this->request->getHeaders()));
 
         if ($this->validateToken()) {
             $content = $this->serializer->unserialize($this->request->getContent());
