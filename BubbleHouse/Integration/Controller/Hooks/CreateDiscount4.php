@@ -20,11 +20,11 @@ use Psr\Log\LoggerInterface;
 class CreateDiscount4 extends Index
 {
     public function __construct(
-        protected readonly TokenProviderInterface $tokenProvider,
-        protected readonly Request $request,
-        protected readonly JsonFactory $jsonFactory,
-        protected readonly SerializerInterface $serializer,
-        private readonly LoggerInterface $logger,
+        protected TokenProviderInterface $tokenProvider,
+        protected Request $request,
+        protected JsonFactory $jsonFactory,
+        protected SerializerInterface $serializer,
+        protected LoggerInterface $logger,
         private readonly DiscountDataInterfaceFactory $discountInterfaceFactory,
         private readonly Create $discountCreate
     ) {
