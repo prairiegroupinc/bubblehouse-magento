@@ -114,7 +114,7 @@ interface DiscountDataInterface
     /**
      * @return string[]
      */
-    public function getSubjectSlugs(): array;
+    public function getSubjectSlugs(): ?array;
 
     /**
      * @param string[]|null

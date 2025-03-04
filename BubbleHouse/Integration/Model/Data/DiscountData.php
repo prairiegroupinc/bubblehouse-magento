@@ -300,7 +300,7 @@ class DiscountData extends DataObject implements DiscountDataInterface
 
     public function getSubjectSlugs(): array
     {
-        return $this->getData(self::SUBJECT_SLUGS);
+        return $this->getData(self::SUBJECT_SLUGS) ?? [];
     }
 
     public function setSubjectSlugs(?array $subjectSlugs): void

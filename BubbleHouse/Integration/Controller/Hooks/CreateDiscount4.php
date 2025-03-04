@@ -45,7 +45,7 @@ class CreateDiscount4 extends Index
         $result = $this->jsonFactory->create();
         $this->logger->critical($this->serializer->serialize($this->request->getContent()));
         $this->logger->critical($this->serializer->serialize($this->request->getHeaders()));
-
+// somehow there is no auth in headers
 //        if ($this->validateToken()) {
             $couponData = $this->serializer->unserialize($this->request->getContent());
             $discount = $this->discountInterfaceFactory->create();
