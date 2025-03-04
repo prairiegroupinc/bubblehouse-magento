@@ -43,8 +43,8 @@ class CreateDiscount4 extends Index
     public function execute(): ResultInterface
     {
         $result = $this->jsonFactory->create();
-        $this->logger->critical($this->serializer->unserialize($this->request->getContent()));
-        $this->logger->critical($this->serializer->unserialize($this->request->getHeaders()));
+        $this->logger->critical($this->serializer->serialize($this->request->getContent()));
+        $this->logger->critical($this->serializer->serialize($this->request->getHeaders()));
 
 //        if ($this->validateToken()) {
             $couponData = $this->serializer->unserialize($this->request->getContent());
