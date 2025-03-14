@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework/Setup/Declaration/Schema/etc/db_schema.xsd">
+    <table name="bubblehouse_queue_log" resource="default" engine="innodb" comment="Queue Log Table">
+        <column name="id" xsi:type="int" nullable="false" identity="true" unsigned="true" comment="ID" />
+        <column name="message_type" xsi:type="varchar" length="255" nullable="false" comment="Message Type (order/customer)" />
+        <column name="message_body" xsi:type="text" nullable="false" comment="Message Body" />
+        <column name="status" xsi:type="smallint" nullable="false" default="0" comment="Export Status (0 = Failed, 1 = Success)" />
+        <column name="created_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At" />
+        <column name="updated_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At" />
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="id"/>
+        </constraint>
+    </table>
+</schema>

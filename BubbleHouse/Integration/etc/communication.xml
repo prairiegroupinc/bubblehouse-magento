@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:framework:Communication/etc/communication.xsd">
+    <!-- Order Export Topic -->
+    <topic name="bubblehouse.integration.order.export" request="int">
+        <handler name="orderQueueHandler" type="BubbleHouse\Integration\Queue\OrderExportHandler" method="process"/>
+    </topic>
+    <!-- Customer Export Topic -->
+    <topic name="bubblehouse.integration.customer.export" request="int">
+        <handler name="customerQueueHandler" type="BubbleHouse\Integration\Queue\CustomerHandler" method="process"/>
+    </topic>
+</config>

@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<config
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/publisher.xsd">
+    <!-- Order Export Publisher -->
+    <publisher topic="bubblehouse.integration.order.export">
+        <connection name="db" exchange="bubblehouse.integration.order" disabled="false"/>
+    </publisher>
+    <!-- Customer Export Publisher -->
+    <publisher topic="bubblehouse.integration.customer.export">
+        <connection name="db" exchange="bubblehouse.integration.customer" disabled="false"/>
+    </publisher>
+</config>

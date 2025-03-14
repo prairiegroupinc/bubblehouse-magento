@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<config
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/topology.xsd">
+    <exchange name="bubblehouse.order.export" type="topic" connection="db">
+        <binding id="bubblehouse.order.export.binding"
+                 topic="bubblehouse.integration.order.export"
+                 destinationType="queue"
+                 destination="bubblehouse.order.export.queue"/>
+    </exchange>
+    <exchange name="bubblehouse.customer.export" type="topic" connection="db">
+        <binding id="bubblehouse.customer.export.binding"
+                 topic="bubblehouse.integration.customer.export"
+                 destinationType="queue"
+                 destination="bubblehouse.customer.export.queue"/>
+    </exchange>
+</config>

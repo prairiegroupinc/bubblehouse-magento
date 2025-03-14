@@ -5,16 +5,14 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Plugin\Magento\Sales\Model\ResourceModel\Order;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
-use BubbleHouse\Integration\Model\EportData\Order\OrderExtractor;
-use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\MessageQueue\PublisherInterface;
 use Magento\Sales\Model\ResourceModel\Order;
 
 class StatusChangePlugin
 {
     public function __construct(
-        private readonly BubbleHouseRequest $bubbleHouseRequest,
-        private readonly OrderExtractor $orderExtractor,
+        private readonly PublisherInterface $publisher,
         private readonly ConfigProvider $configProvider
     ) {
     }
@@ -37,13 +35,7 @@ class StatusChangePlugin
         }
 
         if ($object->isDeleted() || $object->getOrigData('status') !== $object->getData('status')) {
-            $extractedData = $this->orderExtractor->extract($object, (bool)$object->getData('is_deleted'));
-            $this->bubbleHouseRequest->exportData(
-                BubbleHouseRequest::ORDER_EXPORT_TYPE,
-                $extractedData,
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                $object->getStoreId()
-            );
+            $this->publisher->publish('bubblehouse.integration.order.export', (int) $object->getEntityId());
         }
 
         return $result;

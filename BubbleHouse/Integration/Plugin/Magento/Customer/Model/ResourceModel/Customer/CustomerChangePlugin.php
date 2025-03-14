@@ -5,15 +5,14 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Plugin\Magento\Customer\Model\ResourceModel\Customer;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
-use BubbleHouse\Integration\Model\EportData\Customer\CustomerExtractor;
-use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
 use Magento\Customer\Model\ResourceModel\Customer;
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\MessageQueue\PublisherInterface;
 
 class CustomerChangePlugin
 {
     public function __construct(
-        private readonly BubbleHouseRequest $bubbleHouseRequest,
+        private readonly PublisherInterface $publisher,
         private readonly ConfigProvider $configProvider
     ) {
     }
@@ -36,13 +35,7 @@ class CustomerChangePlugin
         }
 
         if ($object->isDeleted() || $this->shouldTrackChanges($object)) {
-            $extractedData = CustomerExtractor::extract($object->getDataModel());
-            $this->bubbleHouseRequest->exportData(
-                BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
-                $extractedData,
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                $object->getStoreId()
-            );
+            $this->publisher->publish('bubblehouse.integration.customer.export', (int) $object->getEntityId());
         }
 
         return $result;
