@@ -9,6 +9,7 @@
                 <api_key backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <shared_secret backend_model="Magento\Config\Model\Config\Backend\Encrypted" />
                 <token_expiration_time>5</token_expiration_time>
+                <iframe_height>500</iframe_height>
                 <customer_export_enbled>1</customer_export_enbled>
                 <order_export_enabled>1</order_export_enabled>
             </general>

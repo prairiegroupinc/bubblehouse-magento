@@ -4,7 +4,7 @@
         <referenceContainer name="content">
             <block name="bubblehouse.rewards.index" template="BubbleHouse_Integration::rewards.phtml" cacheable="false">
                 <arguments>
-                    <argument name="token_provider" xsi:type="object">BubbleHouse\Integration\ViewModel\TokenProvider</argument>
+                    <argument name="config_provider" xsi:type="object">BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider</argument>
                 </arguments>
             </block>
         </referenceContainer>

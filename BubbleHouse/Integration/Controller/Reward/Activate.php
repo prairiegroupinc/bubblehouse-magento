@@ -13,7 +13,6 @@ class Activate implements ActionInterface
 {
 
     public function __construct(
-        private readonly Context $context,
         private readonly PageFactory $pageFactory
     ) {
     }

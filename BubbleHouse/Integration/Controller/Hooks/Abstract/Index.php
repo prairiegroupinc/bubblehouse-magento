@@ -28,11 +28,10 @@ abstract class Index  implements CsrfAwareActionInterface, HttpPostActionInterfa
     ) {
     }
 
+    // according to api doc this should be in work, but current hook version does not use magento access key
     protected function validateToken(): bool
     {
         $authToken = $this->request->getHeaders(self::AUTH_HEADER)->getFieldValue();
-        // test purpose
-        $this->logger->debug('auth: ' . $authToken);
         $authToken = str_contains($authToken, 'Bearer')
             ? str_replace('Bearer ', '', $authToken)
             : $authToken;

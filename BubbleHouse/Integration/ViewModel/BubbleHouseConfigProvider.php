@@ -11,7 +11,7 @@ use Magento\Framework\Session\SessionManagerInterface;
 use Magento\Framework\View\Element\Block\ArgumentInterface;
 use Magento\Store\Model\StoreManagerInterface;
 
-class TokenProvider implements ArgumentInterface
+class BubbleHouseConfigProvider implements ArgumentInterface
 {
     /** @var Session */
     private ?SessionManagerInterface $customerSession = null;
@@ -53,12 +53,22 @@ class TokenProvider implements ArgumentInterface
     public function getCustomerToken(): string
     {
         $store = $this->storeManager->getStore();
-        $customerId = $this->customerSession->getCustomerId();
+        $customerId = $this->customerSession->isLoggedIn() ? $this->customerSession->getCustomerId() : null;
 
         return $this->tokenAuthCreate->createShopToken(
             ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store->getId(),
             $customerId
+        );
+    }
+
+    public function getIframeHeight(): int
+    {
+        $store = $this->storeManager->getStore();
+
+        return $this->configProvider->getIframeHeight(
+            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+            $store->getId()
         );
     }
 }

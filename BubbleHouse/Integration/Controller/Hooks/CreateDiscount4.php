@@ -43,31 +43,22 @@ class CreateDiscount4 extends Index
     public function execute(): ResultInterface
     {
         $result = $this->jsonFactory->create();
-        $this->logger->critical($this->serializer->serialize($this->request->getContent()));
-        $this->logger->critical($this->serializer->serialize($this->request->getHeaders()));
-// somehow there is no auth in headers
-//        if ($this->validateToken()) {
-            $couponData = $this->serializer->unserialize($this->request->getContent());
-            $discount = $this->discountInterfaceFactory->create();
-            $discount->setData($couponData);
+        $couponData = $this->serializer->unserialize($this->request->getContent());
+        $discount = $this->discountInterfaceFactory->create();
+        $discount->setData($couponData);
 
-            try {
-                $this->discountCreate->execute($discount);
-            } catch (AlreadyExistsException $exception) {
-                $result->setHttpResponseCode(409);
-                $result->setData(['error' => $exception->getMessage()]);
-            } catch (Exception $exception) {
-                $result->setHttpResponseCode(503);
-                $result->setData(['error' => $exception->getMessage()]);
-            }
+        try {
+            $this->discountCreate->execute($discount);
+        } catch (AlreadyExistsException $exception) {
+            $result->setHttpResponseCode(409);
+            $result->setData(['error' => $exception->getMessage()]);
+        } catch (Exception $exception) {
+            $result->setHttpResponseCode(503);
+            $result->setData(['error' => $exception->getMessage()]);
+        }
 
-            $result->setHttpResponseCode(201);
-            $result->setData(['ok' => true]);
-
-//        } else {
-//            $result->setHttpResponseCode(403);
-//            $result->setData(['error' => 'Not valid access token']);
-//        }
+        $result->setHttpResponseCode(201);
+        $result->setData(['ok' => true]);
 
         return $result;
     }

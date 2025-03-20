@@ -15,6 +15,8 @@ class ConfigProvider
     public const TOKEN_EXPIRATION_TIME_PATH = 'bubblehouse/general/token_expiration_time';
     public const SHARED_SECRET_PATH = 'bubblehouse/general/shared_secret';
 
+    public const IFRAME_HEIGHT_PATH = 'bubblehouse/general/iframe_height';
+
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
     ) {
@@ -90,5 +92,16 @@ class ConfigProvider
             $scopeType,
             $scopeCode
         );
+    }
+
+    public function getIframeHeight(
+        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+        $scopeCode = null
+    ): int {
+        return $this->scopeConfig->isSetFlag(
+            self::IFRAME_HEIGHT_PATH,
+            $scopeType,
+            $scopeCode
+        ) ?? 1500;
     }
 }

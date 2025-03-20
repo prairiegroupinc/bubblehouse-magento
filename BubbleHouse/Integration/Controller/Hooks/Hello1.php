@@ -17,22 +17,17 @@ class Hello1 extends Index
     public function execute(): ResultInterface
     {
         $result = $this->jsonFactory->create();
-        $this->logger->critical($this->serializer->serialize($this->request->getContent()));
-        $this->logger->critical($this->serializer->serialize($this->request->getHeaders()));
-// somehow there is no auth in headers
-//        if ($this->validateToken()) {
-            $content = $this->serializer->unserialize($this->request->getContent());
-            $magic = $content[self::MAGIC] ?? null;
+        $content = $this->serializer->unserialize($this->request->getContent());
+        $magic = $content[self::MAGIC] ?? null;
 
-            if ($magic) {
-                $hooks = $this->getHookNames(__DIR__);
+        if ($magic) {
+            $hooks = $this->getHookNames(__DIR__);
 
-                return $result->setData([
-                    'magic' => $magic,
-                    'hooks' => $hooks
-                ]);
-            }
-//        }
+            return $result->setData([
+                'magic' => $magic,
+                'hooks' => $hooks
+            ]);
+        }
 
         $result->setHttpResponseCode(404);
         $result->setData(['error' => 'Not found']);
