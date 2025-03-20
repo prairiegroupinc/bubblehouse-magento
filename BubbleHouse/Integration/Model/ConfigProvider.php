@@ -98,7 +98,7 @@ class ConfigProvider
         $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         $scopeCode = null
     ): int {
-        return $this->scopeConfig->isSetFlag(
+        return $this->scopeConfig->getValue(
             self::IFRAME_HEIGHT_PATH,
             $scopeType,
             $scopeCode
