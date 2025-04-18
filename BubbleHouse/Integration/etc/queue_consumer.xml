@@ -1,13 +1,15 @@
 <?xml version="1.0"?>
 <config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-           xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
+    xsi:noNamespaceSchemaLocation="urn:magento:framework-message-queue:etc/consumer.xsd">
     <consumer name="bubblehouse.order.export.consumer"
               queue="bubblehouse.order.export.queue"
               connection="db"
-              handler="BubbleHouse\Integration\Queue\OrderExportHandler::process"/>
+              handler="BubbleHouse\Integration\Queue\OrderExportHandler::process"
+              cron_schedule="*/5 * * * *" />
     <consumer name="bubblehouse.customer.export.consumer"
               queue="bubblehouse.customer.export.queue"
               handler="BubbleHouse\Integration\Queue\CustomerHandler::process"
-              connection="db"/>
+              connection="db"
+              cron_schedule="*/5 * * * *" />
 </config>
