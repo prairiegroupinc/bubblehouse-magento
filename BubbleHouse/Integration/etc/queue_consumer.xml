@@ -6,10 +6,10 @@
               queue="bubblehouse.order.export.queue"
               connection="db"
               handler="BubbleHouse\Integration\Queue\OrderExportHandler::process"
-              cron_schedule="*/5 * * * *" />
+    />
     <consumer name="bubblehouse.customer.export.consumer"
               queue="bubblehouse.customer.export.queue"
               handler="BubbleHouse\Integration\Queue\CustomerHandler::process"
               connection="db"
-              cron_schedule="*/5 * * * *" />
+    />
 </config>
