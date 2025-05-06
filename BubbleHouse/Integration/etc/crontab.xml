@@ -3,7 +3,7 @@
         xsi:noNamespaceSchemaLocation="urn:magento:framework:Crontab/etc/crontab.xsd">
     <group id="default">
         <job name="bubblehouse_queue_retry" instance="BubbleHouse\Integration\Cron\RetryFailedMessages" method="execute">
-            <schedule>*/30 * * * *</schedule>
+            <schedule>*/3 * * * *</schedule>
         </job>
     </group>
 </config>

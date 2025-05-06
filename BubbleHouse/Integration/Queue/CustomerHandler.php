@@ -9,6 +9,9 @@ use BubbleHouse\Integration\Model\ResourceModel\QueueLog as QueueLogResource;
 use BubbleHouse\Integration\Model\QueueLogFactory;
 use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
 use Exception;
+use Magento\Customer\Model\Customer;
+use Magento\Customer\Model\ResourceModel\Customer as CustomerResource;
+use Magento\Customer\Model\CustomerFactory;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
@@ -19,7 +22,8 @@ class CustomerHandler
 {
     public function __construct(
         private readonly LoggerInterface $logger,
-        private readonly CustomerRepositoryInterface $customerRepository,
+        private readonly CustomerResource $customerRepository,
+        private readonly CustomerFactory $customerFactory,
         private readonly BubbleHouseRequest $bubbleHouseRequest,
         private readonly QueueLogResource $resource,
         private readonly QueueLogFactory $queueLogFactory,
@@ -30,8 +34,10 @@ class CustomerHandler
     public function process(int $customerId): void
     {
         try {
-            $customer = $this->customerRepository->getById($customerId);
-            $extractedData = CustomerExtractor::extract($customer);
+            /** @var Customer $customerModel */
+            $customerModel = $this->customerFactory->create();
+            $this->customerRepository->load($customerModel, $customerId);
+            $extractedData = CustomerExtractor::extract($customerModel->getDataModel());
             $data = $this->serializer->serialize($extractedData);
             $queueLog = $this->queueLogFactory->create();
             $queueLog->setData(
@@ -47,7 +53,7 @@ class CustomerHandler
                 BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
                 $extractedData,
                 ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-                $customer->getStoreId()
+                $customerModel->getStoreId()
             );
 
             if (!$response) {
