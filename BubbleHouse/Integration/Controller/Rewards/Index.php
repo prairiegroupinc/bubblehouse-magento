@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BubbleHouse\Integration\Controller\Rewards7;
+namespace BubbleHouse\Integration\Controller\Rewards;
 
 use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultInterface;
