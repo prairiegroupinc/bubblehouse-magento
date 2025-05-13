@@ -1,0 +1,26 @@
+<?php
+
+declare(strict_types=1);
+/** @var Template $block */
+/** @var BubbleHouseConfigProvider $configProvider */
+/** @var Escaper $escaper */
+/** @var SecureHtmlRenderer $secureRenderer */
+
+use BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+$configProvider = $block->getConfigProvider(); ?>
+<?php if ($configProvider->isEnabled()) : ?>
+    <iframe id="bhpage"
+            src="https://app.bubblehouse.com/blocks/v2023061/<?= $escaper->escapeHtmlAttr($configProvider->getShopSlug()) ?>/<?= $block->getData('page') ?>?instance=bhpage&auth=<?= $escaper->escapeHtmlAttr($configProvider->getCustomerToken()) ?>"
+            sandbox="allow-top-navigation allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin"
+            allow="clipboard-write"
+            style="border: 0; width: 100%; height: <?= $block->getData('height') ?> px;"></iframe>
+<?= htmlspecialchars_decode($secureRenderer->renderTag(
+    'script',
+        ['src' => 'https://app.bubblehouse.com/s/' . $configProvider->getShopSlug() . '/bubblehouse.js'],
+        ''
+    )) ?>
+<?php endif;

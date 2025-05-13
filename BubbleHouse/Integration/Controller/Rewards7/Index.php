@@ -2,14 +2,13 @@
 
 declare(strict_types=1);
 
-namespace BubbleHouse\Integration\Controller\Reward;
+namespace BubbleHouse\Integration\Controller\Rewards7;
 
-use Magento\Framework\App\Action\Context;
 use Magento\Framework\App\ActionInterface;
 use Magento\Framework\Controller\ResultInterface;
 use Magento\Framework\View\Result\PageFactory;
 
-class Activate implements ActionInterface
+class Index implements ActionInterface
 {
 
     public function __construct(

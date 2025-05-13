@@ -34,9 +34,6 @@
                 <field id="shop_slug" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>BubbleHouse Shop Slug</label>
                 </field>
-                <field id="iframe_height" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
-                    <label>BubbleHouse Reward Iframe Height (integer)</label>
-                </field>
                 <field id="order_export_enabled" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <label>BubbleHouse Order Export Enabled</label>
