@@ -57,7 +57,11 @@ class Create implements CreateDiscount4Interface
         $cartPriceRule->setCustomerGroupIds($customerGroupIds);
         $cartPriceRule->setWebsiteIds($availableWebsites);
         $cartPriceRule->setFromDate(date(TimeMapper::TIME_FORMAT, time()));
-        $cartPriceRule->setToDate(TimeMapper::unmap($CreateDiscount4->getEndTime()));
+
+        if ($CreateDiscount4->getEndTime() && TimeMapper::unmap($CreateDiscount4->getEndTime())) {
+            $cartPriceRule->setToDate(TimeMapper::unmap($CreateDiscount4->getEndTime()));
+        }
+
         // Set the usage limit per customer.
         $cartPriceRule->setUsesPerCoupon($CreateDiscount4->getMaxUses());
         $cartPriceRule->setUsesPerCustomer(1);
@@ -214,7 +218,14 @@ class Create implements CreateDiscount4Interface
             )->addFieldToFilter('entity_id', ['eq' => $customerId]);
         }
 
-        return $collection->getAllIds();
+        $ids = $collection->getAllIds();
+
+        if (empty($ids)) {
+            $collectionWithoutFilters = $this->customerGroupCollectionFactory->create();
+            $ids = $collectionWithoutFilters->getAllIds();
+        }
+
+        return $ids;
     }
 
     protected function getAvailableWebsiteIds(): array
