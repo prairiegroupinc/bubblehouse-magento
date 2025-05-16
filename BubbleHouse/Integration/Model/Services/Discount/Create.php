@@ -168,28 +168,6 @@ class Create implements CreateDiscount4Interface
             }
         }
 
-        if (!empty($CreateDiscount4->getCollectionIds())) {
-            $cartPriceRule->setCondition(
-                $this->conditionInterfaceFactory->create()->setConditionType(
-                    Combine::class
-                )->setAggregatorType(
-                    'all'
-                )->setValue(
-                    1
-                )->setConditions(
-                    [
-                        0 => $this->conditionInterfaceFactory->create()->setConditionType(
-                            Product::class
-                        )->setAttributeName(
-                            'category_ids'
-                        )->setOperator(
-                            '()'
-                        )->setValue($CreateDiscount4->getProductIds())
-                    ]
-                )
-            );
-        }
-
         // save
         $savedCartPriceRule = $this->appState->emulateAreaCode(
             FrontNameResolver::AREA_CODE,
