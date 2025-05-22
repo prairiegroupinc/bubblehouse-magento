@@ -1,19 +1,16 @@
 {
     "name": "bubble-house/module-integration",
-    "version": "1.0.0",
-    "description": "BubbleHouse Magento2 Integration ",
+    "description": "BubbleHouse Magento2 Integration",
     "type": "magento2-module",
+    "license": "proprietary",
     "require": {
         "php": ">=8.1",
-        "magento/framework": "*",
+        "magento/framework": "103.0.*",
         "magento/module-config": "101.2.*",
         "magento/module-customer": "103.0.*",
         "magento/module-sales": "103.0.*",
         "magento/module-sales-rule": "101.2.*"
     },
-    "license": [
-        "Proprietary"
-    ],
     "autoload": {
         "files": [
             "registration.php"
