@@ -12,6 +12,9 @@
         "magento/module-sales-rule": "101.2.*"
     },
     "autoload": {
+        "psr-4": {
+            "BubbleHouse\\Integration\\": ""
+        },
         "files": [
             "registration.php"
         ]
