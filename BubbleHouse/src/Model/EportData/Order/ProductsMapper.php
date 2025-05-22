@@ -2,6 +2,7 @@
 
 namespace BubbleHouse\Integration\Model\EportData\Order;
 
+use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;

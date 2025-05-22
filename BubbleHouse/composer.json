@@ -1,6 +1,6 @@
 {
     "name": "bubble-house/module-integration",
-    "description": "Bubble House Magento2 Integration",
+    "description": "Bubble House Magento 2 Integration Module",
     "type": "magento2-module",
     "license": "proprietary",
     "require": {
@@ -12,11 +12,14 @@
         "magento/module-sales-rule": "101.2.*"
     },
     "autoload": {
+        "psr-4": {
+            "BubbleHouse\\Integration\\": "src/"
+        },
         "files": [
             "registration.php"
-        ],
-        "psr-4": {
-            "BubbleHouse\\Integration\\": ""
-        }
-    }
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
+

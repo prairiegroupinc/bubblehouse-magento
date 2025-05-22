@@ -5,13 +5,14 @@ declare(strict_types=1);
 /** @var Escaper $escaper */
 /** @var SecureHtmlRenderer $secureRenderer */
 
+use BubbleHouse\Integration\Block\Widget\Iframe;
 use BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider;
 use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
 use Magento\Framework\View\Helper\SecureHtmlRenderer;?>
 
 <?= $block->getLayout()
-    ->createBlock(\BubbleHouse\Integration\Block\Widget\Iframe::class)
+    ->createBlock(Iframe::class)
     ->setData([
         'title' => 'Rewards',
         'page' => 'Rewards7',

@@ -5,6 +5,10 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Model\EportData\Order;
 
 use BubbleHouse\Integration\Model\EportData\Customer\CustomerExtractor;
+use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
+use BubbleHouse\Integration\Model\EportData\Order\OrderStatusMapper;
+use BubbleHouse\Integration\Model\EportData\Order\ProductsMapper;
+use BubbleHouse\Integration\Model\EportData\Order\TimeMapper;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Store\Model\StoreManagerInterface;
