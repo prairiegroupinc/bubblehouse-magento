@@ -1,5 +1,5 @@
 
-Bubble House Integration Iframe Widget
+Bubblehouse Integration Iframe Widget
 =====================================
 
 This Magento 2 widget allows you to display an iframe for the BubbleHouse Block API.
@@ -11,8 +11,8 @@ Widget Configuration
 The widget is defined in `etc/widget.xml` as follows:
 
 <widget class="BubbleHouse\Integration\Block\Widget\Iframe" id="bubblehouse_block_api">
-    <label>BubbleHouse Integration Iframe</label>
-    <description>Bubble House Block API iFrames</description>
+    <label>Bubblehouse Integration Iframe</label>
+    <description>Bubblehouse Block API iFrames</description>
     <parameters>
         <parameter name="page" xsi:type="text" required="false" visible="true" sort_order="10">
             <label>Page</label>
@@ -61,7 +61,7 @@ Use this directive in the content editor:
 
 - Go to Content > Pages (or Blocks) and edit a page or block.
 - Click "Insert Widget".
-- Select "BubbleHouse Integration Iframe".
+- Select "Bubblehouse Integration Iframe".
 - Set parameters: Page and iFrame Height.
 - Click Insert Widget. Magento will insert the directive as shown above.
 

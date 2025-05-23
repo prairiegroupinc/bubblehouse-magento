@@ -1,6 +1,6 @@
 {
-    "name": "bubble-house/module-integration",
-    "description": "Bubble House Magento 2 Integration Module",
+    "name": "bubblehouse/module-integration",
+    "description": "Bubblehouse Magento 2 Integration Module",
     "type": "magento2-module",
     "license": "proprietary",
     "require": {

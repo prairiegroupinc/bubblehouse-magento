@@ -64,7 +64,7 @@ class CustomerHandler
             $this->resource->save($queueLog);
         } catch (Exception $e) {
             $this->logger->error("Customer Export Failed: " . $e->getMessage());
-            throw new LocalizedException(__('BubbleHouse export failed'));
+            throw new LocalizedException(__('Bubblehouse export failed'));
         }
     }
 }

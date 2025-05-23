@@ -2,8 +2,8 @@
 <widgets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Widget:etc/widget.xsd">
     <widget class="BubbleHouse\Integration\Block\Widget\Iframe" id="bubblehouse_block_api">
-        <label>BubbleHouse Integration Iframe</label>
-        <description>BubbleHouse Block API iFrames</description>
+        <label>Bubblehouse Integration Iframe</label>
+        <description>Bubblehouse Block API iFrames</description>
         <parameters>
             <parameter name="page" xsi:type="text" required="true" visible="true" sort_order="10">
                 <label>Page</label>

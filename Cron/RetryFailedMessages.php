@@ -53,7 +53,7 @@ class RetryFailedMessages
                     );
                 }
             } catch (\Exception $exception) {
-                $this->logger->critical(__('Failed Resend BubbleHouse Data: ' . $exception->getMessage()));
+                $this->logger->critical(__('Failed Resend Bubblehouse Data: ' . $exception->getMessage()));
             }
        }
     }

@@ -63,7 +63,7 @@ class OrderExportHandler
 
         } catch (Exception $e) {
             $this->logger->error("Order Export Failed: " . $e->getMessage());
-            throw new LocalizedException(__('BubbleHouse export failed'));
+            throw new LocalizedException(__('Bubblehouse export failed'));
         }
     }
 }
