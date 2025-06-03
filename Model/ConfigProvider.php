@@ -17,6 +17,7 @@ class ConfigProvider
 
     public const IFRAME_HEIGHT_PATH = 'bubblehouse/general/iframe_height';
     public const CUSTOMER_BALANCE_AMOUNT_PATH = 'bubblehouse/general/enable_customer_balance_amount';
+    public const IFRAME_STYLES_PATH = 'bubblehouse/general/iframe_styles';
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
@@ -115,5 +116,16 @@ class ConfigProvider
             $scopeType,
             $scopeCode
         ) ?? 1500;
+    }
+
+    public function getIframeStyles(
+        $scopeCode = null,
+        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+    ): string {
+        return $this->scopeConfig->getValue(
+            self::IFRAME_STYLES_PATH,
+            $scopeType,
+            $scopeCode
+        ) ?? '';
     }
 }

@@ -2,14 +2,15 @@
 declare(strict_types=1);
 /** @var Template $block */
 /** @var BubbleHouseConfigProvider $configProvider */
-/** @var Escaper $escaper */
 /** @var SecureHtmlRenderer $secureRenderer */
 
 use BubbleHouse\Integration\Block\Widget\Iframe;
 use BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider;
-use Magento\Framework\Escaper;
 use Magento\Framework\View\Element\Template;
-use Magento\Framework\View\Helper\SecureHtmlRenderer;?>
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+$configProvider = $block->getData('config_provider');
+?>
 
 <?= $block->getLayout()
     ->createBlock(Iframe::class)
@@ -20,4 +21,4 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;?>
     ])
     ->toHtml();
 ?>
-
+<?= $secureRenderer->renderTag('style', [], $configProvider->getCustomStyles(), true) ?>

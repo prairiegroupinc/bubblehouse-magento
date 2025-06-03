@@ -18,12 +18,12 @@ $configProvider = $block->getConfigProvider(); ?>
             sandbox="allow-top-navigation allow-scripts allow-forms allow-modals allow-popups allow-popups-to-escape-sandbox allow-same-origin"
             allow="clipboard-write"
             style="border: 0; width: 100%; height: <?= $block->getData('height') ?> px;"></iframe>
-<?= htmlspecialchars_decode($secureRenderer->renderTag(
-    'script',
+    <?= htmlspecialchars_decode($secureRenderer->renderTag(
+        'script',
         ['src' => 'https://app.bubblehouse.com/s/' . $configProvider->getShopSlug() . '/bubblehouse.js'],
         ''
     )) ?>
-<?php if (!empty($block->getData('custom_styles'))): ?>
-    <?= $secureRenderer->renderTag('style', [], $block->getData('custom_styles'), false) ?>
-<?php endif; ?>
+    <?php if (!empty($block->getData('custom_styles'))): ?>
+        <?= $secureRenderer->renderTag('style', [], $block->getData('custom_styles'), false) ?>
+    <?php endif; ?>
 <?php endif;

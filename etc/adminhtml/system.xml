@@ -47,7 +47,8 @@
                     <label>Bubblehouse Customer Export Enabled</label>
                 </field>
                 <field id="iframe_styles" translate="label" type="textarea" sortOrder="100" showInWebsite="1" showInStore="1" showInDefault="1">
-                    <label>Add styles for widgets</label>
+                    <label>Add styles for widget on bubblehouse/rewars page</label>
+                    <hint>Use styles without style tag</hint>
                 </field>
             </group>
         </section>

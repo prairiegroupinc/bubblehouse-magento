@@ -71,4 +71,11 @@ class BubbleHouseConfigProvider implements ArgumentInterface
             $store->getId()
         );
     }
+
+    public function getCustomStyles(): string
+    {
+        $store = $this->storeManager->getStore();
+
+        return $this->configProvider->getIframeStyles($store->getId());
+    }
 }
