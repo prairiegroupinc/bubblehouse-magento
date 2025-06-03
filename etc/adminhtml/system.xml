@@ -37,9 +37,17 @@
                 <field id="order_export_enabled" translate="label" type="select" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <label>Bubblehouse Order Export Enabled</label>
-                </field> <field id="customer_export_enbled" translate="label" type="select" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                </field>
+                <field id="enable_customer_balance_amount" translate="label" type="select" sortOrder="80" showInDefault="1" showInStore="1" showInWebsite="1">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>Will include 'customer_balance_amount' field in export amount</label>
+                </field>
+                <field id="customer_export_enbled" translate="label" type="select" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <label>Bubblehouse Customer Export Enabled</label>
+                </field>
+                <field id="iframe_styles" translate="label" type="textarea" sortOrder="100" showInWebsite="1" showInStore="1" showInDefault="1">
+                    <label>Add styles for widgets</label>
                 </field>
             </group>
         </section>

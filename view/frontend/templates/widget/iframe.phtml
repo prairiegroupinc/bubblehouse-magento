@@ -23,4 +23,7 @@ $configProvider = $block->getConfigProvider(); ?>
         ['src' => 'https://app.bubblehouse.com/s/' . $configProvider->getShopSlug() . '/bubblehouse.js'],
         ''
     )) ?>
+<?php if (!empty($block->getData('custom_styles'))): ?>
+    <?= $secureRenderer->renderTag('style', [], $block->getData('custom_styles'), false) ?>
+<?php endif; ?>
 <?php endif;

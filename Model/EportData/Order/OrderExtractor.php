@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Model\EportData\Order;
 
+use BubbleHouse\Integration\Model\ConfigProvider;
 use BubbleHouse\Integration\Model\EportData\Customer\CustomerExtractor;
 use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
 use BubbleHouse\Integration\Model\EportData\Order\OrderStatusMapper;
@@ -18,6 +19,7 @@ class OrderExtractor
     public function __construct(
         private readonly CustomerRepositoryInterface $customerRepository,
         private readonly StoreManagerInterface $storeManager,
+        private readonly ConfigProvider $configProvider,
         private readonly ProductsMapper $productsMapper
     ) {
     }
@@ -36,10 +38,18 @@ class OrderExtractor
         );
         $extractedData['store_location'] = 'Website ID: ' . $store->getWebsiteId()
             . ' -> Store ID: ' . $store->getName();
-        $extractedData['amount_full'] = MonetaryMapper::map((float)$order->getBaseGrandTotal());
-        $extractedData['amount_spent'] = MonetaryMapper::map(
-            (float)$order->getBaseGrandTotal() - abs((float)$order->getDiscountAmount())
-        );
+        $amountFull = (float) $order->getSubtotal()
+            + (float) $order->getShippingAmount() + (float) $order->getTaxAmount();
+        $amountSpent = (float) ($order->getTotalInvoiced() ?? $order->getGrandTotal());
+
+        if ($this->configProvider->isCustomerBalanceEnabled($store->getId())) {
+            $amountFull = (float) ($order->getTotalInvoiced() ?? $order->getBaseGrandTotal())
+                + (float) $order->getData('customer_balance_amount');
+            $amountSpent = $amountFull - (float) $order->getData('customer_balance_amount');
+        }
+
+        $extractedData['amount_full'] = MonetaryMapper::map($amountFull);
+        $extractedData['amount_spent'] = MonetaryMapper::map($amountSpent);
         $extractedData['items'] = $this->getOrderLines($order);
 
         if ($deleted) {

@@ -16,6 +16,7 @@ class ConfigProvider
     public const SHARED_SECRET_PATH = 'bubblehouse/general/shared_secret';
 
     public const IFRAME_HEIGHT_PATH = 'bubblehouse/general/iframe_height';
+    public const CUSTOMER_BALANCE_AMOUNT_PATH = 'bubblehouse/general/enable_customer_balance_amount';
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
@@ -89,6 +90,17 @@ class ConfigProvider
     ): bool {
         return $this->scopeConfig->isSetFlag(
             self::CUSTOMER_EXPORT_PATH,
+            $scopeType,
+            $scopeCode
+        );
+    }
+
+    public function isCustomerBalanceEnabled(
+        $scopeCode = null,
+        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+    ): bool {
+        return $this->scopeConfig->isSetFlag(
+            self::CUSTOMER_BALANCE_AMOUNT_PATH,
             $scopeType,
             $scopeCode
         );
