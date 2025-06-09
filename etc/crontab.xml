@@ -5,5 +5,8 @@
         <job name="bubblehouse_queue_retry" instance="BubbleHouse\Integration\Cron\RetryFailedMessages" method="execute">
             <schedule>*/3 * * * *</schedule>
         </job>
+        <job name="bubblehouse_customer_export" instance="BubbleHouse\Integration\Cron\CustomerExport" method="execute">
+            <schedule>*/1 * * *</schedule>
+        </job>
     </group>
 </config>

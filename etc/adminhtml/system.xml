@@ -46,6 +46,10 @@
                     <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
                     <label>Bubblehouse Customer Export Enabled</label>
                 </field>
+                <field id="export_customers" translate="label" type="button" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Export Customers</label>
+                    <frontend_model>BubbleHouse\Integration\Block\Adminhtml\System\Config\ExportButton</frontend_model>
+                </field>
                 <field id="iframe_styles" translate="label" type="textarea" sortOrder="100" showInWebsite="1" showInStore="1" showInDefault="1">
                     <label>Add styles for widget on bubblehouse/rewars page</label>
                     <hint>Use styles without style tag</hint>

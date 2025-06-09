@@ -1,0 +1,26 @@
+<?php
+$formKey = $block->getFormKey(); // This gets the CSRF token
+echo $block->getButtonHtml();
+?>
+<script>
+    require(['jquery'], function($) {
+        $('#export_customers_btn').click(function() {
+            if (confirm('Export all customers?')) {
+                $.ajax({
+                    url: '<?= $block->getAjaxUrl() ?>',
+                    type: 'POST',
+                    data: {
+                        form_key: '<?= $formKey ?>'
+                    },
+                    showLoader: true,
+                    success: function(response) {
+                        alert(response.message || 'Export completed.');
+                    },
+                    error: function() {
+                        alert('Export failed.');
+                    }
+                });
+            }
+        });
+    });
+</script>
