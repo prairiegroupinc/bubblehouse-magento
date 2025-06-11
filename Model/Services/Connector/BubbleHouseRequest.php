@@ -37,7 +37,8 @@ class BubbleHouseRequest
         int $exportType,
         array $payload,
         $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $multiplePayload = false
     ): bool {
 
         try {
@@ -48,7 +49,7 @@ class BubbleHouseRequest
             $uri = $this->getExportUrl($exportType, $scopeType, $scopeCode);
             $payloadOffset = $exportType === self::ORDER_EXPORT_TYPE ? 'orders' : 'customers';
             $payload = [
-                $payloadOffset => [$payload]
+                $payloadOffset => $multiplePayload ? $payload : [$payload]
             ];
             $requestOptions = $this->prepareOptions($shopToken, $payload, $scopeType, $scopeCode);
             $response = $this->client->post($uri, $requestOptions);
@@ -67,8 +68,8 @@ class BubbleHouseRequest
 
     private function getExportUrl(
         int $exportType,
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+            $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+            $scopeCode = null
     ): string {
         $shopSlug = $this->configProvider->getShopSlug($scopeType, $scopeCode);
 
@@ -82,8 +83,8 @@ class BubbleHouseRequest
     private function prepareOptions(
         string $shopToken,
         array $payload,
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+               $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
+               $scopeCode = null
     ): array {
         $debug = $this->configProvider->isDebug(
             $scopeType,

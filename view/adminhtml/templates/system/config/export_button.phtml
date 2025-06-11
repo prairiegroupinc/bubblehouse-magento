@@ -16,8 +16,8 @@ echo $block->getButtonHtml();
                     success: function(response) {
                         alert(response.message || 'Export completed.');
                     },
-                    error: function() {
-                        alert('Export failed.');
+                    error: function(response) {
+                        alert(response.message);
                     }
                 });
             }
