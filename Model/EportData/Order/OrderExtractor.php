@@ -45,7 +45,7 @@ class OrderExtractor
         if ($this->configProvider->isCustomerBalanceEnabled($store->getId())) {
             $amountFull = (float) ($order->getTotalInvoiced() ?? $order->getBaseGrandTotal())
                 + (float) $order->getData('customer_balance_amount');
-            $amountSpent = $amountFull - (float) $order->getData('customer_balance_amount');
+            $amountSpent = $amountFull + (float) $order->getData('customer_balance_amount');
         }
 
         $extractedData['amount_full'] = MonetaryMapper::map($amountFull);
