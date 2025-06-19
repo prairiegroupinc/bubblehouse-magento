@@ -24,10 +24,8 @@ class CustomerChangePlugin
     ) {
         /** @var \Magento\Customer\Model\Customer $object */
         if (!$this->configProvider->isEnabled(
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $object->getStoreId()
             ) && $this->configProvider->isCustomerExportEnabled(
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $object->getStoreId()
             )
         ) {

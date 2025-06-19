@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Model\Services\Auth;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Serialize\SerializerInterface;
 use Magento\Framework\Stdlib\DateTime\TimezoneInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class TokenAuthCreate
 {
@@ -18,10 +18,9 @@ class TokenAuthCreate
 
     public function __construct(
         private readonly ConfigProvider $configProvider,
-        private readonly SerializerInterface $serializer,
-        private readonly TimezoneInterface $timezone
     ) {
     }
+
     public function signBubblehouseToken($subject, $keyId, $keySecretInBase64, $validityInSeconds = null) {
         $nowUnix = time();
 
@@ -58,18 +57,17 @@ class TokenAuthCreate
     }
 
     public function createShopToken(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         $scopeCode = null,
-        string $customerId = null
+        string $customerId = null,
     ): string {
         $shopSlug = $customerId !== null
-            ? $this->configProvider->getShopSlug($scopeType, $scopeCode) . '/' . $customerId
-            : $this->configProvider->getShopSlug($scopeType, $scopeCode);
+            ? $this->configProvider->getShopSlug($scopeCode) . '/' . $customerId
+            : $this->configProvider->getShopSlug($scopeCode);
         return $this->signBubblehouseToken(
             $shopSlug,
-            $this->configProvider->getKid($scopeType, $scopeCode),
-            $this->configProvider->getSharedSecret($scopeType, $scopeCode),
-            (int)$this->configProvider->getTokenExpirationTime($scopeType, $scopeCode) * 60
+            $this->configProvider->getKid( $scopeCode),
+            $this->configProvider->getSharedSecret($scopeCode),
+            (int)$this->configProvider->getTokenExpirationTime($scopeCode) * 60
         );
     }
 }

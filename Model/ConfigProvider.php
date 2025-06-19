@@ -3,6 +3,7 @@
 namespace BubbleHouse\Integration\Model;
 
 use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Store\Model\ScopeInterface;
 
 class ConfigProvider
 {
@@ -25,8 +26,8 @@ class ConfigProvider
     }
 
     public function isEnabled(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
         return $this->scopeConfig->isSetFlag(
             self::ENABLED_PATH,
@@ -36,8 +37,8 @@ class ConfigProvider
     }
 
     public function isDebug(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
         return $this->scopeConfig->isSetFlag(
             self::DEBUG_PATH,
@@ -47,36 +48,36 @@ class ConfigProvider
     }
 
     public function getKid(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): string {
         return $this->scopeConfig->getValue(self::KID_PATH, $scopeType, $scopeCode) ?? '';
     }
 
     public function getSharedSecret(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): string {
         return $this->scopeConfig->getValue(self::SHARED_SECRET_PATH, $scopeType, $scopeCode) ?? '';
     }
 
     public function getShopSlug(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): string {
         return $this->scopeConfig->getValue(self::SHOP_SLUG_PATH, $scopeType, $scopeCode) ?? '';
     }
 
     public function getTokenExpirationTime(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): string {
         return $this->scopeConfig->getValue(self::TOKEN_EXPIRATION_TIME_PATH, $scopeType, $scopeCode) ?? '';
     }
 
     public function isOrderExportEnabled(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
         return $this->scopeConfig->isSetFlag(
             self::ORDER_EXPORT_PATH,
@@ -86,8 +87,8 @@ class ConfigProvider
     }
 
     public function isCustomerExportEnabled(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
         return $this->scopeConfig->isSetFlag(
             self::CUSTOMER_EXPORT_PATH,
@@ -98,7 +99,7 @@ class ConfigProvider
 
     public function isCustomerBalanceEnabled(
         $scopeCode = null,
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
         return $this->scopeConfig->isSetFlag(
             self::CUSTOMER_BALANCE_AMOUNT_PATH,
@@ -108,8 +109,8 @@ class ConfigProvider
     }
 
     public function getIframeHeight(
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-        $scopeCode = null
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): int {
         return $this->scopeConfig->getValue(
             self::IFRAME_HEIGHT_PATH,
@@ -120,7 +121,7 @@ class ConfigProvider
 
     public function getIframeStyles(
         $scopeCode = null,
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT
+        $scopeType = ScopeInterface::SCOPE_STORE
     ): string {
         return $this->scopeConfig->getValue(
             self::IFRAME_STYLES_PATH,

@@ -30,7 +30,6 @@ class BubbleHouseConfigProvider implements ArgumentInterface
         $store = $this->storeManager->getStore();
 
         return $this->configProvider->isEnabled(
-            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store->getId()
         );
     }
@@ -45,7 +44,6 @@ class BubbleHouseConfigProvider implements ArgumentInterface
         $store = $this->storeManager->getStore();
 
         return $this->configProvider->getShopSlug(
-            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store->getId()
         );
     }
@@ -56,7 +54,6 @@ class BubbleHouseConfigProvider implements ArgumentInterface
         $customerId = $this->customerSession->isLoggedIn() ? $this->customerSession->getCustomerId() : null;
 
         return $this->tokenAuthCreate->createShopToken(
-            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store->getId(),
             $customerId
         );
@@ -67,7 +64,6 @@ class BubbleHouseConfigProvider implements ArgumentInterface
         $store = $this->storeManager->getStore();
 
         return $this->configProvider->getIframeHeight(
-            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $store->getId()
         );
     }

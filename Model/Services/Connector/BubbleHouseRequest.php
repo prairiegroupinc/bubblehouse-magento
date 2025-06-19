@@ -7,9 +7,9 @@ namespace BubbleHouse\Integration\Model\Services\Connector;
 use BubbleHouse\Integration\Model\ConfigProvider;
 use BubbleHouse\Integration\Model\Services\Auth\TokenAuthCreate;
 use GuzzleHttp\Client;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
+use Magento\Store\Model\ScopeInterface;
 use Psr\Log\LoggerInterface;
 
 class BubbleHouseRequest
@@ -36,22 +36,20 @@ class BubbleHouseRequest
     public function exportData(
         int $exportType,
         array $payload,
-        $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
         $scopeCode = null,
         $multiplePayload = false
     ): bool {
 
         try {
             $shopToken = $this->tokenAuthCreate->createShopToken(
-                $scopeType,
                 $scopeCode
             );
-            $uri = $this->getExportUrl($exportType, $scopeType, $scopeCode);
+            $uri = $this->getExportUrl($exportType, $scopeCode);
             $payloadOffset = $exportType === self::ORDER_EXPORT_TYPE ? 'orders' : 'customers';
             $payload = [
                 $payloadOffset => $multiplePayload ? $payload : [$payload]
             ];
-            $requestOptions = $this->prepareOptions($shopToken, $payload, $scopeType, $scopeCode);
+            $requestOptions = $this->prepareOptions($shopToken, $payload, $scopeCode);
             $response = $this->client->post($uri, $requestOptions);
             $result = $this->serializer->unserialize($response->getBody());
         } catch (\Exception $exception) {
@@ -68,10 +66,9 @@ class BubbleHouseRequest
 
     private function getExportUrl(
         int $exportType,
-            $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
             $scopeCode = null
     ): string {
-        $shopSlug = $this->configProvider->getShopSlug($scopeType, $scopeCode);
+        $shopSlug = $this->configProvider->getShopSlug($scopeCode);
 
         if (empty($shopSlug)) {
             throw new LocalizedException(__('Please Add Shop Slug in Admin'));
@@ -83,11 +80,9 @@ class BubbleHouseRequest
     private function prepareOptions(
         string $shopToken,
         array $payload,
-               $scopeType = ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
-               $scopeCode = null
+        $scopeCode = null
     ): array {
         $debug = $this->configProvider->isDebug(
-            $scopeType,
             $scopeCode
         );
 

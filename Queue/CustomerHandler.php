@@ -12,11 +12,9 @@ use Exception;
 use Magento\Customer\Model\Customer;
 use Magento\Customer\Model\ResourceModel\Customer as CustomerResource;
 use Magento\Customer\Model\CustomerFactory;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
 use Psr\Log\LoggerInterface;
-use Magento\Customer\Api\CustomerRepositoryInterface;
 
 class CustomerHandler
 {
@@ -52,7 +50,6 @@ class CustomerHandler
             $response = $this->bubbleHouseRequest->exportData(
                 BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
                 $extractedData,
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $customerModel->getStoreId()
             );
 

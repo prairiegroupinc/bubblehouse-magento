@@ -19,6 +19,9 @@ $configProvider = $block->getData('config_provider');
         'page' => 'Rewards7',
         'height' => '1700'
     ])
-    ->toHtml();
+    ->toHtml()
 ?>
+
+<?php if (!empty($configProvider->getCustomStyles())):?>
 <?= $secureRenderer->renderTag('style', [], $configProvider->getCustomStyles(), true) ?>
+<?php endif;

@@ -6,10 +6,6 @@ namespace BubbleHouse\Integration\Model\EportData\Order;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
 use BubbleHouse\Integration\Model\EportData\Customer\CustomerExtractor;
-use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
-use BubbleHouse\Integration\Model\EportData\Order\OrderStatusMapper;
-use BubbleHouse\Integration\Model\EportData\Order\ProductsMapper;
-use BubbleHouse\Integration\Model\EportData\Order\TimeMapper;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Store\Model\StoreManagerInterface;
@@ -43,9 +39,9 @@ class OrderExtractor
         $amountSpent = (float) ($order->getTotalInvoiced() ?? $order->getGrandTotal());
 
         if ($this->configProvider->isCustomerBalanceEnabled($store->getId())) {
-            $amountFull = (float) ($order->getTotalInvoiced() ?? $order->getBaseGrandTotal())
-                + (float) $order->getData('customer_balance_amount');
-            $amountSpent = $amountFull + (float) $order->getData('customer_balance_amount');
+            $customerBalanceAmount = (float) $order->getData('customer_balance_amount');
+            $amountFull += $customerBalanceAmount;
+            $amountSpent += $customerBalanceAmount;
         }
 
         $extractedData['amount_full'] = MonetaryMapper::map($amountFull);

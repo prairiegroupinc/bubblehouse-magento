@@ -24,10 +24,8 @@ class StatusChangePlugin
     ) {
         /** @var \Magento\Sales\Model\Order $object */
         if (!$this->configProvider->isEnabled(
-            ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $object->getStoreId()
             ) && $this->configProvider->isOrderExportEnabled(
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $object->getStoreId()
             )
         ) {

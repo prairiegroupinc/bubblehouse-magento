@@ -50,7 +50,6 @@ class OrderExportHandler
             $response = $this->bubbleHouseRequest->exportData(
                 BubbleHouseRequest::ORDER_EXPORT_TYPE,
                 $extractedData,
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $order->getStoreId()
             );
 

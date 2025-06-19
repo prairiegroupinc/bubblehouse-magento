@@ -22,7 +22,7 @@ class InitialExport
 
     public function execute(): int
     {
-        $exported = [];
+        $exportData = [];
         $pageSize = 100;
         $page = 1;
 
@@ -46,7 +46,6 @@ class InitialExport
             $result = $this->request->exportData(
                 BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
                 $exportData,
-                ScopeConfigInterface::SCOPE_TYPE_DEFAULT,
                 $customer->getStoreId(),
                 true
             );
