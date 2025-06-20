@@ -40,7 +40,6 @@ class OrderExtractor
 
         if ($this->configProvider->isCustomerBalanceEnabled($store->getId())) {
             $customerBalanceAmount = (float) $order->getData('customer_balance_amount');
-            $amountFull += $customerBalanceAmount;
             $amountSpent += $customerBalanceAmount;
         }
 
