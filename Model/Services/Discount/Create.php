@@ -74,10 +74,10 @@ class Create implements CreateDiscount4Interface
         );
 
         // amount or percentage
-        if ($CreateDiscount4->getAmount()) {
-            $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_FIXED_AMOUNT);
+        if ((int)$CreateDiscount4->getAmount() > 0 && (int)$CreateDiscount4->getPercentage() === 0) {
+            $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_FIXED_AMOUNT_FOR_CART);
             $cartPriceRule->setDiscountAmount(MonetaryMapper::unmap($CreateDiscount4->getAmount()));
-        } else if ($CreateDiscount4->getPercentage()) {
+        } else if ((int)$CreateDiscount4->getPercentage() > 0) {
             $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_BY_PERCENT);
             $cartPriceRule->setDiscountAmount((int)$CreateDiscount4->getPercentage()/100);
         }
