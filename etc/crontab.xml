@@ -6,7 +6,7 @@
             <schedule>*/3 * * * *</schedule>
         </job>
         <job name="bubblehouse_customer_export" instance="BubbleHouse\Integration\Cron\CustomerExport" method="execute">
-            <schedule>*/1 * * *</schedule>
+            <schedule>*/1 * * * *</schedule>
         </job>
     </group>
 </config>
