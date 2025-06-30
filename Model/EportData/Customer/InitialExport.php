@@ -25,6 +25,7 @@ class InitialExport
         $exportData = [];
         $pageSize = 100;
         $page = 1;
+        $customerIds = [];
 
         do {
             $collection = $this->customerCollectionFactory->create();
@@ -51,8 +52,6 @@ class InitialExport
             );
 
             if ($result) {
-                $customerIds = [];
-
                 foreach ($exportData as $customer) {
                     $customerIds[] = $customer['id'];
                 }

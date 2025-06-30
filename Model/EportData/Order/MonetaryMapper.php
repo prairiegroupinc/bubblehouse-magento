@@ -11,6 +11,10 @@ class MonetaryMapper
 
     public static function map(float $price): string
     {
+        if (str_contains(',', (string) $price)) {
+            $price = str_replace(',', '', (string) $price);
+        }
+
         return number_format($price, self::MAP_PRECISION, '.');
     }
 

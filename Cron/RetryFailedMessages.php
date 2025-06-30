@@ -29,32 +29,75 @@ class RetryFailedMessages
     public function execute(): void
     {
         /** @var Collection $collection */
-       $collection = $this->collectionFactory->create();
-       $collection->addFieldToFilter('status', 0);
-       $collection->setPageSize(100);
+        $collection = $this->collectionFactory->create();
+        $collection->addFieldToFilter('status', 0);
+        $collection->setPageSize(100);
+        $totalPages = $collection->getLastPageNumber();
 
-       /** @var QueueLog $queueLog */
-        foreach ($collection as $queueLog) {
-            try {
-                $type = $queueLog->getData('message_type') === 'customer'
-                    ? BubbleHouseRequest::CUSTOMER_EXPORT_TYPE : BubbleHouseRequest::ORDER_EXPORT_TYPE;
-                $data = $this->serializer->unserialize($queueLog->getData('message_body'));
-                $response = $this->request->exportData(
-                    $type,
-                    $data
-                );
+        for ($currentPage = 1; $currentPage <= $totalPages; $currentPage++) {
+            $collection->clear(); // important: resets previous results
+            $collection->setCurPage($currentPage);
+            $collection->load();
 
-                if ($response) {
-                    $queueLog->setData('status', 1);
-                    $this->appState->emulateAreaCode(
-                        FrontNameResolver::AREA_CODE,
-                        [$this->resource, 'save'],
-                        [$queueLog]
+            /** @var QueueLog $queueLog */
+            foreach ($collection as $queueLog) {
+                try {
+                    $type = $queueLog->getData('message_type') === 'customer'
+                        ? BubbleHouseRequest::CUSTOMER_EXPORT_TYPE : BubbleHouseRequest::ORDER_EXPORT_TYPE;
+                    $data = $this->serializer->unserialize($queueLog->getData('message_body'));
+
+                    if ($type === BubbleHouseRequest::ORDER_EXPORT_TYPE) {
+                        $data = $this->convertMonetary($data);
+                    }
+
+                    $response = $this->request->exportData(
+                        $type,
+                        $data
                     );
+
+                    if ($response) {
+                        $queueLog->setData('status', 1);
+                        $this->appState->emulateAreaCode(
+                            FrontNameResolver::AREA_CODE,
+                            [$this->resource, 'save'],
+                            [$queueLog]
+                        );
+                    }
+                } catch (\Exception $exception) {
+                    $this->logger->critical(__('Failed Resend Bubblehouse Data: ' . $exception->getMessage()));
                 }
-            } catch (\Exception $exception) {
-                $this->logger->critical(__('Failed Resend Bubblehouse Data: ' . $exception->getMessage()));
             }
-       }
+        }
+    }
+
+    private function convertMonetary(array $orderData): array
+    {
+        if (isset($orderData['amount_full']) && str_contains($orderData['amount_full'], ',')) {
+            $orderData['amount_full'] = str_replace(',', '', $orderData['amount_full']);
+        }
+
+        if (isset($orderData['amount_spent']) && str_contains($orderData['amount_spent'], ',')) {
+            $orderData['amount_spent'] = str_replace(',', '', $orderData['amount_spent']);
+        }
+
+        foreach ($orderData['items'] as $itemIndex => $itemData) {
+            if (str_contains($itemData['amount_full'], ',')) {
+                $orderData['items'][$itemIndex]['amount_full'] = str_replace(
+                    ',',
+                    '',
+                    $itemData['amount_full']
+                );
+            }
+
+            if (str_contains($itemData['amount_spent'], ',')) {
+                $orderData['items'][$itemIndex]['amount_spent'] = str_replace(
+                    ',',
+                    '',
+                    $itemData['amount_spent']
+                );
+            }
+        }
+
+        return $orderData;
     }
 }
