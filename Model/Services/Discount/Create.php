@@ -198,7 +198,9 @@ class Create implements CreateDiscount4Interface
 
         $ids = $collection->getAllIds();
 
-        if (empty($ids)) {
+        // Check if result is empty or only contains [0]
+        if (empty($ids) || (count($ids) === 1 && (int)$ids[0] === 0)) {
+            /** @var CustomerGroupCollection $collectionWithoutFilters */
             $collectionWithoutFilters = $this->customerGroupCollectionFactory->create();
             $ids = $collectionWithoutFilters->getAllIds();
         }
