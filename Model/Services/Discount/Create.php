@@ -74,12 +74,21 @@ class Create implements CreateDiscount4Interface
         );
 
         // amount or percentage
-        if ((int)$CreateDiscount4->getAmount() > 0 && (int)$CreateDiscount4->getPercentage() === 0) {
+        if ((int)$CreateDiscount4->getAmount() > 0
+            && (int)$CreateDiscount4->getPercentage() === 0
+            && !$CreateDiscount4->getIsPerProduct()
+        ) {
             $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_FIXED_AMOUNT_FOR_CART);
             $cartPriceRule->setDiscountAmount(MonetaryMapper::unmap($CreateDiscount4->getAmount()));
         } else if ((int)$CreateDiscount4->getPercentage() > 0) {
             $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_BY_PERCENT);
             $cartPriceRule->setDiscountAmount((int)$CreateDiscount4->getPercentage()/100);
+        } else if ((int)$CreateDiscount4->getAmount() > 0
+            && (int)$CreateDiscount4->getPercentage() === 0
+            && $CreateDiscount4->getIsPerProduct()
+        ) {
+            $cartPriceRule->setSimpleAction(RuleInterface::DISCOUNT_ACTION_FIXED_AMOUNT);
+            $cartPriceRule->setDiscountAmount(MonetaryMapper::unmap($CreateDiscount4->getAmount()));
         }
 
         if (!empty($CreateDiscount4->getMinOrderAmount())) {
@@ -106,66 +115,40 @@ class Create implements CreateDiscount4Interface
 
         // set conditions and actions
         if (!empty($CreateDiscount4->getProductIds())) {
-            if (!$CreateDiscount4->getIsPerProduct()) {
-                $cartPriceRule->setCondition(
-                    $this->conditionInterfaceFactory->create()->setConditionType(
-                        Combine::class
-                    )->setAggregatorType(
-                        'all'
-                    )->setValue(
-                        1
-                    )->setConditions(
-                        [
-                            0 => $this->conditionInterfaceFactory->create()->setConditionType(
-                                Product::class
-                            )->setAttributeName(
-                                'sku'
-                            )->setOperator(
-                                '()'
-                            )->setValue($CreateDiscount4->getProductIds())
-                        ]
-                    )
-                );
-            } else {
-                $cartPriceRule->setCondition(
-                    $this->conditionInterfaceFactory->create()->setConditionType(
-                        Found::class
-                    )->setAggregatorType(
-                        'all'
-                    )->setValue(
-                        1
-                    )->setConditions(
-                        [
-                            0 => $this->conditionInterfaceFactory->create()->setConditionType(
-                                Product::class
-                            )->setAttributeName(
-                                'sku'
-                            )->setOperator(
-                                '()'
-                            )->setValue($CreateDiscount4->getProductIds())
-                        ]
-                    )
-                );
-                $cartPriceRule->setActionCondition(
-                    $this->conditionInterfaceFactory->create()->setConditionType(
-                        Combine::class
-                    )->setValue(
-                        1
-                    )->setAggregatorType(
-                        'all'
-                    )->setConditions(
-                        [
-                            0 => $this->conditionInterfaceFactory->create()->setConditionType(
-                                Product::class
-                            )->setAttributeName(
-                                'sku'
-                            )->setOperator(
-                                '()'
-                            )->setValue($CreateDiscount4->getProductIds())
-                        ]
-                    )
-                );
-            }
+            $skus = $CreateDiscount4->getProductIds(); // Example: ['SKU1', 'SKU2']
+
+            // Create the product condition: SKU is one of the given SKUs
+            $productCondition = $this->conditionInterfaceFactory->create()
+                ->setConditionType(\Magento\SalesRule\Model\Rule\Condition\Product::class)
+                ->setAttributeName('sku')
+                ->setOperator('()') // 'is one of'
+                ->setValue($skus);
+
+            // Create the "Found" condition: if an item is FOUND in the cart matching product condition
+            $foundCondition = $this->conditionInterfaceFactory->create()
+                ->setConditionType(\Magento\SalesRule\Model\Rule\Condition\Product\Found::class)
+                ->setAggregatorType('all') // all subconditions must match
+                ->setValue(1) // TRUE
+                ->setConditions([$productCondition]);
+
+            // Wrap the Found condition inside a Combine root condition (this is important)
+            $combineCondition = $this->conditionInterfaceFactory->create()
+                ->setConditionType(\Magento\SalesRule\Model\Rule\Condition\Combine::class)
+                ->setAggregatorType('all')
+                ->setValue(1)
+                ->setConditions([$foundCondition]);
+
+            // Set it to the rule
+            $cartPriceRule->setCondition($combineCondition);
+
+            // Optional: also restrict which items get discounted (target the same SKUs)
+            $cartPriceRule->setActionCondition(
+                $this->conditionInterfaceFactory->create()
+                    ->setConditionType(\Magento\SalesRule\Model\Rule\Condition\Combine::class)
+                    ->setAggregatorType('all')
+                    ->setValue(1)
+                    ->setConditions([$productCondition])
+            );
         }
 
         // save
@@ -180,6 +163,10 @@ class Create implements CreateDiscount4Interface
         $coupon->setRuleId($savedCartPriceRule->getRuleId());
         $coupon->setCode($CreateDiscount4->getCode());
         $coupon->setIsPrimary(true);
+        $coupon->setUsageLimit($CreateDiscount4->getMaxUses());
+        $coupon->setData('bubble_house_coupon', 1);
+        $coupon->setData('bubble_house_max_usages', $CreateDiscount4->getMaxUses());
+        $coupon->setData('bubble_house_usages', 0);
         $this->couponResource->save($coupon);
     }
 
