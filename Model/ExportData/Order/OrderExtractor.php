@@ -2,13 +2,14 @@
 
 declare(strict_types=1);
 
-namespace BubbleHouse\Integration\Model\EportData\Order;
+namespace BubbleHouse\Integration\Model\ExportData\Order;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
-use BubbleHouse\Integration\Model\EportData\Customer\CustomerExtractor;
+use BubbleHouse\Integration\Model\ExportData\Customer\CustomerExtractor;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Sales\Api\Data\OrderInterface;
 use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class OrderExtractor
 {
@@ -16,7 +17,8 @@ class OrderExtractor
         private readonly CustomerRepositoryInterface $customerRepository,
         private readonly StoreManagerInterface $storeManager,
         private readonly ConfigProvider $configProvider,
-        private readonly ProductsMapper $productsMapper
+        private readonly ProductsMapper $productsMapper,
+        protected LoggerInterface $logger
     ) {
     }
 

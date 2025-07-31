@@ -31,9 +31,14 @@ class ExportButton  extends Field
         return $this->urlBuilder->getUrl('bubblehouse/customer/export');
     }
 
-    public function getButtonHtml()
+    public function getButtonCaption()
     {
-        return '<button id="export_customers_btn" type="button">' . __('Export Customers') . '</button>';
+        return __('Export Customers');
+    }
+
+    public function getForceCheckboxLabel()
+    {
+        return __('Force');
     }
 
     public function getFormKey()

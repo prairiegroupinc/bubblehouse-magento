@@ -1,6 +1,6 @@
 <?php
 
-namespace BubbleHouse\Integration\Model\EportData\Order;
+namespace BubbleHouse\Integration\Model\ExportData\Order;
 
 use Magento\Framework\Exception\NoSuchEntityException;
 

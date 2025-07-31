@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Queue;
 
-use BubbleHouse\Integration\Model\EportData\Order\OrderExtractor;
+use BubbleHouse\Integration\Model\ExportData\Order\OrderExtractor;
 use BubbleHouse\Integration\Model\QueueLogFactory;
 use BubbleHouse\Integration\Model\ResourceModel\QueueLog as QueueLogResource;
 use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
@@ -33,8 +33,6 @@ class OrderExportHandler
         try {
             $order = $this->orderRepository->get($orderId);
 
-            // Simulate sending order data to an external API
-            $this->logger->info("Exporting order ID: " . $order->getIncrementId());
             $extractedData = $this->orderExtractor->extract($order, (bool)$order->getData('is_deleted'));
             $data = $this->serializer->serialize($extractedData);
             $queueLog = $this->queueLogFactory->create();

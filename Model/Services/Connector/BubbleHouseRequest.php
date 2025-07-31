@@ -14,7 +14,7 @@ use Psr\Log\LoggerInterface;
 
 class BubbleHouseRequest
 {
-    private const URL = 'https://app.bubblehouse.com/api/v2023061/';
+    private const PATH = '/api/v2023061/';
     private const ORDER_UPDATE_PATH = 'UpdateOrders4';
     private const CUSTOMER_UPDATE_PATH = 'UpdateCustomers3';
     public const ORDER_EXPORT_TYPE = 1;
@@ -74,7 +74,9 @@ class BubbleHouseRequest
             throw new LocalizedException(__('Please Add Shop Slug in Admin'));
         }
 
-        return self::URL . $shopSlug . '/' . self::EXPORT_TYPES[$exportType];
+        $uriPrefix = 'https://' . $this->configProvider->getApiHost() . self::PATH;
+
+        return $uriPrefix . $shopSlug . '/' . self::EXPORT_TYPES[$exportType];
     }
 
     private function prepareOptions(
@@ -87,7 +89,6 @@ class BubbleHouseRequest
         );
 
         if ($debug) {
-
             $payload['debug'] = true;
         }
 

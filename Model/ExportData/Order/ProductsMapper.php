@@ -1,8 +1,8 @@
 <?php
 
-namespace BubbleHouse\Integration\Model\EportData\Order;
+namespace BubbleHouse\Integration\Model\ExportData\Order;
 
-use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
+use BubbleHouse\Integration\Model\ExportData\Order\MonetaryMapper;
 use Magento\Catalog\Api\Data\CategoryInterface;
 use Magento\Catalog\Api\ProductRepositoryInterface;
 use Magento\Catalog\Model\Product;

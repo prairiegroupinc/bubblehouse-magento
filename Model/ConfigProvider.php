@@ -15,10 +15,13 @@ class ConfigProvider
     public const CUSTOMER_EXPORT_PATH = 'bubblehouse/general/customer_export_enabled';
     public const TOKEN_EXPIRATION_TIME_PATH = 'bubblehouse/general/token_expiration_time';
     public const SHARED_SECRET_PATH = 'bubblehouse/general/shared_secret';
+    public const API_HOST_PATH = 'bubblehouse/general/api_host';
 
     public const IFRAME_HEIGHT_PATH = 'bubblehouse/general/iframe_height';
     public const CUSTOMER_BALANCE_AMOUNT_PATH = 'bubblehouse/general/enable_customer_balance_amount';
     public const IFRAME_STYLES_PATH = 'bubblehouse/general/iframe_styles';
+
+    public const DEFAULT_API_HOST = 'app.bubblehouse.com';
 
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
@@ -61,6 +64,13 @@ class ConfigProvider
         return $this->scopeConfig->getValue(self::SHARED_SECRET_PATH, $scopeType, $scopeCode) ?? '';
     }
 
+    public function getApiHost(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        return $this->scopeConfig->getValue(self::API_HOST_PATH, $scopeType, $scopeCode) ?? self::DEFAULT_API_HOST;
+    }
+
     public function getShopSlug(
         $scopeCode = null,
         $scopeType = ScopeInterface::SCOPE_STORE
@@ -79,6 +89,10 @@ class ConfigProvider
         $scopeCode = null,
         $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
+        if (!$this->isEnabled($scopeCode, $scopeType)) {
+            return false;
+        }
+
         return $this->scopeConfig->isSetFlag(
             self::ORDER_EXPORT_PATH,
             $scopeType,
@@ -90,6 +104,10 @@ class ConfigProvider
         $scopeCode = null,
         $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
+        if (!$this->isEnabled($scopeCode, $scopeType)) {
+            return false;
+        }
+
         return $this->scopeConfig->isSetFlag(
             self::CUSTOMER_EXPORT_PATH,
             $scopeType,

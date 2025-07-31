@@ -6,8 +6,8 @@ namespace BubbleHouse\Integration\Model\Services\Discount;
 
 use BubbleHouse\Integration\Api\CreateDiscount4Interface;
 use BubbleHouse\Integration\Api\Data\DiscountDataInterface;
-use BubbleHouse\Integration\Model\EportData\Order\MonetaryMapper;
-use BubbleHouse\Integration\Model\EportData\Order\TimeMapper;
+use BubbleHouse\Integration\Model\ExportData\Order\MonetaryMapper;
+use BubbleHouse\Integration\Model\ExportData\Order\TimeMapper;
 use Exception;
 use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Customer\Model\ResourceModel\Group\Collection as CustomerGroupCollection;

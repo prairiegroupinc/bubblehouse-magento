@@ -1,7 +1,15 @@
 <?php
 $formKey = $block->getFormKey(); // This gets the CSRF token
-echo $block->getButtonHtml();
 ?>
+
+<div style="display: flex; flex-direction: row; gap: 12px; align-items: center;">
+    <button id="export_customers_btn" type="button"><?= $block->getButtonCaption(); ?></button>
+    <label>
+        <input id="export_customers_force_chk" type="checkbox" />
+        <?= $block->getForceCheckboxLabel(); ?>
+    </label>
+</div>
+
 <script>
     require(['jquery'], function($) {
         $('#export_customers_btn').click(function() {
@@ -10,7 +18,8 @@ echo $block->getButtonHtml();
                     url: '<?= $block->getAjaxUrl() ?>',
                     type: 'POST',
                     data: {
-                        form_key: '<?= $formKey ?>'
+                        form_key: '<?= $formKey ?>',
+                        force: $('#export_customers_force_chk').prop('checked')
                     },
                     showLoader: true,
                     success: function(response) {

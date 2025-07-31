@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BubbleHouse\Integration\Model\EportData\Customer;
+namespace BubbleHouse\Integration\Model\ExportData\Customer;
 
 use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
 use BubbleHouse\Integration\Setup\Patch\Data\CreateCustomerExportAttribute;
@@ -20,7 +20,7 @@ class InitialExport
     ) {
     }
 
-    public function execute(): int
+    public function execute(bool $force): int
     {
         $exportData = [];
         $pageSize = 100;
@@ -31,7 +31,9 @@ class InitialExport
             $collection = $this->customerCollectionFactory->create();
             $connection = $collection->getConnection();
             $collection->addAttributeToSelect('*');
-            $collection->addAttributeToFilter(CreateCustomerExportAttribute::ATTRIBUTE_CODE, ['eq' => 0]);
+            if (!$force) {
+                $collection->addAttributeToFilter(CreateCustomerExportAttribute::ATTRIBUTE_CODE, ['eq' => 0]);
+            }
             $collection->setPageSize($pageSize);
             $collection->setCurPage($page);
 

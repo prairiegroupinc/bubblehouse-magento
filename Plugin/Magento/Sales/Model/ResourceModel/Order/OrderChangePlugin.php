@@ -8,12 +8,14 @@ use BubbleHouse\Integration\Model\ConfigProvider;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\MessageQueue\PublisherInterface;
 use Magento\Sales\Model\ResourceModel\Order;
+use Psr\Log\LoggerInterface;
 
-class StatusChangePlugin
+class OrderChangePlugin
 {
     public function __construct(
         private readonly PublisherInterface $publisher,
-        private readonly ConfigProvider $configProvider
+        private readonly ConfigProvider $configProvider,
+        protected LoggerInterface $logger
     ) {
     }
 
@@ -23,16 +25,13 @@ class StatusChangePlugin
         $object
     ) {
         /** @var \Magento\Sales\Model\Order $object */
-        if (!$this->configProvider->isEnabled(
-                $object->getStoreId()
-            ) && $this->configProvider->isOrderExportEnabled(
-                $object->getStoreId()
-            )
-        ) {
+        if (!$this->configProvider->isOrderExportEnabled($object->getStoreId())) {
             return $result;
         }
 
-        if ($object->isDeleted() || $object->getOrigData('status') !== $object->getData('status')) {
+        $changed = $object->isDeleted() || $object->getOrigData("updated_at") !== $object->getData("updated_at");
+
+        if ($changed) {
             $this->publisher->publish('bubblehouse.integration.order.export', (int) $object->getEntityId());
         }
 

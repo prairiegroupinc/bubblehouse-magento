@@ -8,10 +8,12 @@ use BubbleHouse\Integration\Model\ConfigProvider;
 use Magento\Customer\Model\ResourceModel\Customer;
 use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\MessageQueue\PublisherInterface;
+use Psr\Log\LoggerInterface;
 
 class CustomerChangePlugin
 {
     public function __construct(
+        private readonly LoggerInterface $logger,
         private readonly PublisherInterface $publisher,
         private readonly ConfigProvider $configProvider
     ) {
@@ -23,26 +25,16 @@ class CustomerChangePlugin
         $object
     ) {
         /** @var \Magento\Customer\Model\Customer $object */
-        if (!$this->configProvider->isEnabled(
-                $object->getStoreId()
-            ) && $this->configProvider->isCustomerExportEnabled(
-                $object->getStoreId()
-            )
-        ) {
+        if (!$this->configProvider->isCustomerExportEnabled($object->getStoreId())) {
             return $result;
         }
 
-        if ($object->isDeleted() || $this->shouldTrackChanges($object)) {
+        $changed = $object->isDeleted() || $object->getOrigData("updated_at") !== $object->getData("updated_at");
+
+        if ($changed) {
             $this->publisher->publish('bubblehouse.integration.customer.export', (int) $object->getEntityId());
         }
 
         return $result;
-    }
-
-    private function shouldTrackChanges(\Magento\Customer\Model\Customer $object): bool
-    {
-        return $object->getData('firstname') !== $object->getOrigData('firstname')
-            || $object->getData('lastname') !== $object->getOrigData('lastname')
-            || $object->getData('email') !== $object->getOrigData('email');
     }
 }

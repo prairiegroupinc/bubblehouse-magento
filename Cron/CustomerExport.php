@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Cron;
 
-use BubbleHouse\Integration\Model\EportData\Customer\InitialExport;
+use BubbleHouse\Integration\Model\ExportData\Customer\InitialExport;
 
 class CustomerExport
 {
@@ -15,6 +15,6 @@ class CustomerExport
 
     public function execute(): void
     {
-        $this->initialExport->execute();
+        $this->initialExport->execute(false);
     }
 }

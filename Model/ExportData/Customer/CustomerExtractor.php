@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BubbleHouse\Integration\Model\EportData\Customer;
+namespace BubbleHouse\Integration\Model\ExportData\Customer;
 
 use Magento\Customer\Api\Data\CustomerInterface;
 

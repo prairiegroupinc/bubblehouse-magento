@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Queue;
 
-use BubbleHouse\Integration\Model\EportData\Customer\CustomerExtractor;
+use BubbleHouse\Integration\Model\ExportData\Customer\CustomerExtractor;
 use BubbleHouse\Integration\Model\ResourceModel\QueueLog as QueueLogResource;
 use BubbleHouse\Integration\Model\QueueLogFactory;
 use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;

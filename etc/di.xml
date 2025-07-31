@@ -7,8 +7,8 @@
         </arguments>
     </type>
     <type name="Magento\Sales\Model\ResourceModel\Order">
-        <plugin name="BubbleHouse_Integration::order_status_change_plugin"
-                type="BubbleHouse\Integration\Plugin\Magento\Sales\Model\ResourceModel\Order\StatusChangePlugin"/>
+        <plugin name="BubbleHouse_Integration::order_change_plugin"
+                type="BubbleHouse\Integration\Plugin\Magento\Sales\Model\ResourceModel\Order\OrderChangePlugin"/>
     </type>
     <type name="Magento\Customer\Model\ResourceModel\Customer">
         <plugin name="BubbleHouse_Integration::customer_change_plugin"

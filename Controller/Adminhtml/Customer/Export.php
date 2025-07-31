@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Controller\Adminhtml\Customer;
 
-use BubbleHouse\Integration\Model\EportData\Customer\InitialExport;
+use BubbleHouse\Integration\Model\ExportData\Customer\InitialExport;
 use Magento\Backend\App\Action;
 use Magento\Backend\App\Action\Context;
 use Magento\Framework\Controller\Result\JsonFactory;
@@ -26,8 +26,10 @@ class Export extends Action
         $result = $this->resultJsonFactory->create();
         $exported = 0;
 
+        $force = filter_var($this->getRequest()->getParam('force'), FILTER_VALIDATE_BOOLEAN);
+
         try {
-            $exported = $this->initialExport->execute();
+            $exported = $this->initialExport->execute($force);
         } catch (\Exception $exception) {
             $this->logger->critical('could not export BH customers: ' . $exception->getMessage());
             return $result->setData([

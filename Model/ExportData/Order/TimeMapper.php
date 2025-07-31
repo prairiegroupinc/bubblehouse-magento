@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace BubbleHouse\Integration\Model\EportData\Order;
+namespace BubbleHouse\Integration\Model\ExportData\Order;
 
 class TimeMapper
 {
