@@ -6,11 +6,11 @@ namespace BubbleHouse\Integration\Model\ExportData\Order;
 
 class TimeMapper
 {
-    public const TIME_FORMAT = 'Y-m-d H:i:s';
+    public const TIME_FORMAT = 'c';
 
     public static function map(string $date): string
     {
-        return date("c", strtotime($date));
+        return date(self::TIME_FORMAT, strtotime($date));
     }
 
     public static function unmap(string $date): ?string
