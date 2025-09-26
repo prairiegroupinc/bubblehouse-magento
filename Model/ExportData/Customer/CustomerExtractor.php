@@ -15,6 +15,11 @@ class CustomerExtractor
         $extractedData['email'] = $customer->getEmail();
         $extractedData['first_name'] = $customer->getFirstname();
         $extractedData['last_name'] = $customer->getLastname();
+        $extras = (array) $customer->getCustomAttributes();
+        $extractedData['extras'] = [];
+        foreach ($extras as $key => $value) {
+            $extractedData['extras'][$key] = $value->getValue();
+        }
 
         return $extractedData;
     }
