@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<csp_whitelist xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Csp:etc/csp_whitelist.xsd">
+    <policies>
+        <policy id="style-src">
+            <values>
+                <value id="bubblehouse-style" type="host">*.bubblehouse.com</value>
+            </values>
+        </policy>
+        <policy id="script-src">
+            <values>
+                <value id="bubblehouse-script-dev-vite" type="host">http://localhost:5173</value>
+                <value id="bubblehouse-script" type="host">*.bubblehouse.com</value>
+            </values>
+        </policy>
+        <policy id="connect-src">
+            <values>
+                <value id="bubblehouse-connect-dev-vite" type="host">ws://localhost:5173</value>
+                <value id="bubblehouse-connect" type="host">*.bubblehouse.com</value>
+            </values>
+        </policy>
+    </policies>
+</csp_whitelist>

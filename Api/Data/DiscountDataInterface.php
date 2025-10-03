@@ -24,6 +24,7 @@ interface DiscountDataInterface
     public const COLLECTION_IDS = "collection_ids";
     public const IS_PER_PRODUCT = "is_per_product";
     public const APPLIES_TO_ONE_TIME_PURCHASES = "applies_to_one_time_purchases";
+    public const EXTRAS = "extras";
 
     /**
      * Getter for Code.
@@ -254,4 +255,20 @@ interface DiscountDataInterface
      * @return void
      */
     public function setAppliesToOneTimePurchases(?bool $appliesToOneTimePurchases): void;
+
+    /**
+     * Getter for Extras.
+     *
+     * @return array|null
+     */
+    public function getExtras(): ?array;
+
+    /**
+     * Setter for Extras.
+     *
+     * @param array|null $extras
+     *
+     * @return void
+     */
+    public function setExtras(?array $extras): void;
 }

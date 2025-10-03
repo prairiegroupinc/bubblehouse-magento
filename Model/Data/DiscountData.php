@@ -317,4 +317,26 @@ class DiscountData extends DataObject implements DiscountDataInterface
     {
         $this->setData(self::SUBJECT_TYPE, $subjectType);
     }
+
+    /**
+     * Getter for Extras.
+     *
+     * @return array|null
+     */
+    public function getExtras(): ?array
+    {
+        return $this->getData(self::EXTRAS);
+    }
+
+    /**
+     * Setter for Extras.
+     *
+     * @param array|null $extras
+     *
+     * @return void
+     */
+    public function setExtras(?array $extras): void
+    {
+        $this->setData(self::EXTRAS, $extras);
+    }
 }

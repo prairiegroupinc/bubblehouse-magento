@@ -6,8 +6,11 @@ namespace BubbleHouse\Integration\Model\Services\Discount;
 
 use BubbleHouse\Integration\Api\CreateDiscount4Interface;
 use BubbleHouse\Integration\Api\Data\DiscountDataInterface;
+use BubbleHouse\Integration\Api\Data\QuoteDiscountDataInterface;
+use BubbleHouse\Integration\Model\Data\QuoteDiscountData;
 use BubbleHouse\Integration\Model\ExportData\Order\MonetaryMapper;
 use BubbleHouse\Integration\Model\ExportData\Order\TimeMapper;
+use BubbleHouse\Integration\Model\Services\QuoteDiscountService;
 use Exception;
 use Magento\Backend\App\Area\FrontNameResolver;
 use Magento\Customer\Model\ResourceModel\Group\Collection as CustomerGroupCollection;
@@ -25,6 +28,7 @@ use Magento\SalesRule\Model\Rule\Condition\Combine;
 use Magento\SalesRule\Model\Rule\Condition\Product;
 use Magento\SalesRule\Model\Rule\Condition\Product\Found;
 use Magento\Store\Model\StoreManagerInterface;
+use Magento\Customer\Api\CustomerRepositoryInterface;
 
 class Create implements CreateDiscount4Interface
 {
@@ -36,7 +40,10 @@ class Create implements CreateDiscount4Interface
         private readonly CustomerGroupCollectionFactory $customerGroupCollectionFactory,
         private readonly ConditionInterfaceFactory $conditionInterfaceFactory,
         private readonly CouponInterfaceFactory $couponInterfaceFactory,
-        private readonly CouponResource $couponResource
+        private readonly CouponResource $couponResource,
+        private readonly CustomerRepositoryInterface $customerRepository,
+        private readonly QuoteDiscountService $quoteDiscountService,
+        private readonly \Psr\Log\LoggerInterface $logger,
     ) {
     }
 
@@ -47,6 +54,12 @@ class Create implements CreateDiscount4Interface
      */
     public function execute(DiscountDataInterface $CreateDiscount4): void
     {
+        $extras = $CreateDiscount4->getExtras();
+        if ($extras && isset($extras['checkout_quote_id'])) {
+            $this->updateCustomerQuoteDiscounts($CreateDiscount4, $extras['checkout_quote_id']);
+            return;
+        }
+
         /** @var RuleInterface $cartPriceRule */
         $cartPriceRule = $this->cartPriceRuleFactory->create();
         $availableWebsites = $this->getAvailableWebsiteIds();
@@ -205,5 +218,38 @@ class Create implements CreateDiscount4Interface
         }
 
         return $websiteIds;
+    }
+
+    private function updateCustomerQuoteDiscounts(DiscountDataInterface $CreateDiscount4, string $quoteId): void
+    {
+        $customerId = $CreateDiscount4->getCustomerId();
+        if (!$customerId) {
+            return;
+        }
+
+        try {
+            $customer = $this->customerRepository->getById((int)$customerId);
+
+            $currentDiscountsJson = '';
+            $quoteDiscountAttribute = $customer->getCustomAttribute('bh_quote_discounts');
+            if ($quoteDiscountAttribute) {
+                $currentDiscountsJson = $quoteDiscountAttribute->getValue();
+            }
+
+            $currentDiscounts = $this->quoteDiscountService->unserializeDiscounts($currentDiscountsJson);
+
+            $newDiscount = new QuoteDiscountData();
+            $newDiscount->setAmount($CreateDiscount4->getAmount() ?? '0.0000');
+            $newDiscount->setDescription($CreateDiscount4->getTitle());
+
+            $currentDiscounts[$quoteId] = $newDiscount;
+
+            $updatedJson = $this->quoteDiscountService->serializeDiscounts($currentDiscounts);
+            $this->quoteDiscountService->set($customerId, $updatedJson);
+
+        } catch (\Exception $e) {
+            $this->logger->error($e->getMessage());
+            throw new \Exception('Failed to update customer quote discounts: ' . $e->getMessage());
+        }
     }
 }

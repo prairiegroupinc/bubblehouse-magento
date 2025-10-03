@@ -20,6 +20,8 @@ class ConfigProvider
     public const IFRAME_HEIGHT_PATH = 'bubblehouse/general/iframe_height';
     public const CUSTOMER_BALANCE_AMOUNT_PATH = 'bubblehouse/general/enable_customer_balance_amount';
     public const IFRAME_STYLES_PATH = 'bubblehouse/general/iframe_styles';
+    public const WIDGET_ID_PATH = 'bubblehouse/general/widget_id';
+    public const DEV_MODE_PATH = 'bubblehouse/general/dev_mode';
 
     public const DEFAULT_API_HOST = 'app.bubblehouse.com';
 
@@ -146,5 +148,27 @@ class ConfigProvider
             $scopeType,
             $scopeCode
         ) ?? '';
+    }
+
+    public function getWidgetId(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        return $this->scopeConfig->getValue(
+            self::WIDGET_ID_PATH,
+            $scopeType,
+            $scopeCode
+        ) ?? 'checkout-widget-custom';
+    }
+
+    public function isDevMode(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): bool {
+        return $this->scopeConfig->isSetFlag(
+            self::DEV_MODE_PATH,
+            $scopeType,
+            $scopeCode
+        );
     }
 }

@@ -1,0 +1,48 @@
+<?php
+
+declare(strict_types=1);
+/** @var Template $block */
+/** @var BubbleHouseConfigProvider $configProvider */
+/** @var Escaper $escaper */
+/** @var SecureHtmlRenderer $secureRenderer */
+
+use BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider;
+use Magento\Framework\Escaper;
+use Magento\Framework\View\Element\Template;
+use Magento\Framework\View\Helper\SecureHtmlRenderer;
+
+$configProvider = $block->getData('config_provider');
+$nonce = $block->getData('nonce');
+$devMode = $configProvider->isDevMode() ? 'true' : 'false';
+?>
+
+<div id="bubblehouse-checkout-widget"></div>
+
+<?= $secureRenderer->renderTag(
+    'script',
+    ['type' => 'text/javascript'],
+    <<<SCRIPT
+        function Bubblehouse_OnLoad_Widget() {
+            require(['BubbleHouse_Integration/js/cart_api']);
+
+            window.Bubblehouse.widgets.embed(
+                "#bubblehouse-checkout-widget",
+                "{$configProvider->getWidgetId()}",
+                {
+                    slug: "{$configProvider->getShopSlug()}",
+                    host: "{$configProvider->getApiHost()}",
+                    token: "{$configProvider->getCustomerToken()}"
+                },
+                { dev: { enabled: {$devMode} }, nonce: "{$nonce}" },
+            )
+        }
+    SCRIPT,
+    false
+); ?>
+
+<?= $secureRenderer->renderTag(
+    'script',
+    ['src' => 'https://' .  $configProvider->getApiHost() . '/static/js/magento-widget.js'],
+    '',
+    false
+); ?>

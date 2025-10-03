@@ -57,6 +57,14 @@
                 <field id="api_host" translate="label" type="text" sortOrder="65" showInDefault="1" showInWebsite="1" showInStore="1">
                     <label>Bubblehouse Host</label>
                 </field>
+                <field id="widget_id" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Widget ID</label>
+                    <comment>Default: checkout-widget-custom</comment>
+                </field>
+                <field id="dev_mode" translate="label" type="select" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <label>Enable Dev Mode</label>
+                </field>
             </group>
         </section>
     </system>

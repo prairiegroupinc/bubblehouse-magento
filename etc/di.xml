@@ -18,7 +18,19 @@
                 type="BubbleHouse\Integration\Model\Data\DiscountData"/>
     <preference for="BubbleHouse\Integration\Api\CreateDiscount4Interface"
                 type="BubbleHouse\Integration\Model\Services\Discount\Create"/>
+    <preference for="BubbleHouse\Integration\Api\Data\QuoteDiscountDataInterface"
+                type="BubbleHouse\Integration\Model\Data\QuoteDiscountData"/>
+    <type name="BubbleHouse\Integration\Model\Services\QuoteDiscountService">
+        <arguments>
+            <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
+        </arguments>
+    </type>
     <type name="BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider">
+        <arguments>
+            <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
+        </arguments>
+    </type>
+    <type name="BubbleHouse\Integration\Model\Services\QuoteDiscountHandler">
         <arguments>
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
