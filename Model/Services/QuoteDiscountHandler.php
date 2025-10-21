@@ -71,11 +71,11 @@ class QuoteDiscountHandler extends AbstractTotal
 
             if ($discountAmount > 0) {
                 $total->addTotalAmount($this->getCode(), -$discountAmount);
-                $total->addBaseTotalAmount($this->getCode(), -$discountAmount);
-                $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmount);
-                $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmount);
+                /* $total->addBaseTotalAmount($this->getCode(), -$discountAmount); */
+                /* $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmount); */
+                /* $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmount); */
                 $total->setDiscountAmount(-$discountAmount);
-                $total->setBaseDiscountAmount(-$discountAmount);
+                /* $total->setBaseDiscountAmount(-$discountAmount); */
                 $total->setDiscountDescription($discountLabel);
                 // TODO (@seletskiy): Ideally we want to clean no longer relevant data.
                 /* unset($discounts[$quoteId]); */
