@@ -42,8 +42,6 @@ class QuoteDiscountHandler extends AbstractTotal
         }
 
         $this->logger->debug("QuotaDiscountHandler: collect");
-        $this->logger->debug(print_r($shippingAssignment->getItems(), true));
-        $this->logger->debug(print_r($total, true));
         if (!count($shippingAssignment->getItems())) {
             return $this;
         }
@@ -77,7 +75,7 @@ class QuoteDiscountHandler extends AbstractTotal
             }
 
             if ($discountAmount > 0) {
-                /* $total->addTotalAmount($this->getCode(), -$discountAmount); */
+                $total->addTotalAmount($this->getCode(), -$discountAmount);
                 /* $total->addBaseTotalAmount($this->getCode(), -$discountAmount); */
                 /* $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmount); */
                 /* $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmount); */
@@ -94,7 +92,6 @@ class QuoteDiscountHandler extends AbstractTotal
             $this->logger->alert($e->getMessage());
             throw new LocalizedException($e->getMessage());
         }
-        $this->logger->debug(print_r($total, true));
 
         return $this;
     }
