@@ -67,9 +67,11 @@ class QuoteDiscountHandler extends AbstractTotal
             $discountAmount = $this->priceCurrency->convert((float)$discount->getAmount());
             $discountLabel = $discount->getDescription();
 
-            if($total->getDiscountDescription()) {
-                $discountAmount = $total->getDiscountAmount() + $discountAmount;
-                $discountLabel  = $total->getDiscountDescription().', '.$discountLabel;
+            // Combine with existing discounts.
+            $discountAmountTotal = $discountAmount;
+            if($total->getDiscountAmount() < 0) {
+                $discountAmountTotal = -$total->getDiscountAmount() + $discountAmount;
+                $discountLabel       = $total->getDiscountDescription().', '.$discountLabel;
             }
 
             $this->logger->info(
@@ -77,19 +79,19 @@ class QuoteDiscountHandler extends AbstractTotal
                 "quote.id=" . $quote->getId() . " " .
                 "quote.subtotal=" . $total->getSubtotal() . " " .
                 "discount.amount=" . (string)$discountAmount . " " .
+                "discount.amount_total=" . (string)$discountAmountTotal . " " .
                 "discount.code=" . (string)$discount->getCode()
             );
 
             if ($discountAmount > 0) {
                 $total->addTotalAmount($this->getCode(), -$discountAmount);
                 $total->addBaseTotalAmount($this->getCode(), -$discountAmount);
-                $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmount);
-                $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmount);
-                $total->setDiscountAmount(-$discountAmount);
-                $total->setBaseDiscountAmount(-$discountAmount);
+                $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmountTotal);
+                $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmountTotal);
+                $total->setDiscountAmount(-$discountAmountTotal);
+                $total->setBaseDiscountAmount(-$discountAmountTotal);
                 $total->setDiscountDescription($discountLabel);
             }
-
         } catch (\Exception $e) {
             $this->logger->alert($e->getMessage());
             throw new LocalizedException($e->getMessage());
