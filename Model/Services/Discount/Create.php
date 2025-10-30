@@ -241,6 +241,7 @@ class Create implements CreateDiscount4Interface
             $newDiscount = new QuoteDiscountData();
             $newDiscount->setAmount($CreateDiscount4->getAmount() ?? '0.0000');
             $newDiscount->setDescription($CreateDiscount4->getTitle());
+            $newDiscount->setCode($CreateDiscount4->getCode());
 
             $currentDiscounts[$quoteId] = $newDiscount;
 

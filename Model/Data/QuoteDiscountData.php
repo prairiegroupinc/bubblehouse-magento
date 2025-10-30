@@ -19,6 +19,16 @@ class QuoteDiscountData extends DataObject implements QuoteDiscountDataInterface
         return $this->setData(self::AMOUNT, $amount);
     }
 
+    public function getCode(): string
+    {
+        return (string) $this->getData(self::CODE);
+    }
+
+    public function setCode(string $code): self
+    {
+        return $this->setData(self::CODE, $code);
+    }
+
     public function getDescription(): string
     {
         return (string) $this->getData(self::DESCRIPTION);

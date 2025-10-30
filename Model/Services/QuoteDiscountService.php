@@ -28,7 +28,8 @@ class QuoteDiscountService
             if ($discount instanceof QuoteDiscountDataInterface) {
                 $serializedData[$quoteId] = [
                     QuoteDiscountDataInterface::AMOUNT => $discount->getAmount(),
-                    QuoteDiscountDataInterface::DESCRIPTION => $discount->getDescription()
+                    QuoteDiscountDataInterface::DESCRIPTION => $discount->getDescription(),
+                    QuoteDiscountDataInterface::CODE => $discount->getCode()
                 ];
             }
         }
@@ -52,6 +53,7 @@ class QuoteDiscountService
                 $discount = new QuoteDiscountData();
                 $discount->setAmount((string) $discountData[QuoteDiscountDataInterface::AMOUNT]);
                 $discount->setDescription((string) $discountData[QuoteDiscountDataInterface::DESCRIPTION]);
+                $discount->setCode((string) ($discountData[QuoteDiscountDataInterface::CODE] ?? ""));
                 $discounts[$quoteId] = $discount;
             }
         }

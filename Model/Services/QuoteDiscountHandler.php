@@ -67,25 +67,27 @@ class QuoteDiscountHandler extends AbstractTotal
             $discountAmount = $this->priceCurrency->convert((float)$discount->getAmount());
             $discountLabel = $discount->getDescription();
 
-            $appliedCartDiscount = 0;
             if($total->getDiscountDescription()) {
-                $appliedCartDiscount = $total->getDiscountAmount();
-                $discountAmount      = $total->getDiscountAmount() + $discountAmount;
-                $discountLabel       = $total->getDiscountDescription().', '.$discountLabel;
+                $discountAmount = $total->getDiscountAmount() + $discountAmount;
+                $discountLabel  = $total->getDiscountDescription().', '.$discountLabel;
             }
+
+            $this->logger->info(
+                "[BH] {QuoteDiscountHandler/collect} " .
+                "quote.id=" . $quote->getId() . " " .
+                "quote.subtotal=" . $total->getSubtotal() . " " .
+                "discount.amount=" . (string)$discountAmount . " " .
+                "discount.code=" . (string)$discount->getCode()
+            );
 
             if ($discountAmount > 0) {
                 $total->addTotalAmount($this->getCode(), -$discountAmount);
-                /* $total->addBaseTotalAmount($this->getCode(), -$discountAmount); */
-                /* $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmount); */
-                /* $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmount); */
+                $total->addBaseTotalAmount($this->getCode(), -$discountAmount);
+                $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmount);
+                $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmount);
                 $total->setDiscountAmount(-$discountAmount);
-                /* $total->setBaseDiscountAmount(-$discountAmount); */
+                $total->setBaseDiscountAmount(-$discountAmount);
                 $total->setDiscountDescription($discountLabel);
-                // TODO (@seletskiy): Ideally we want to clean no longer relevant data.
-                /* unset($discounts[$quoteId]); */
-                /* $updatedJson = $this->quoteDiscountService->serializeDiscounts($discounts); */
-                /* $this->quoteDiscountService->set($customerId, $updatedJson); */
             }
 
         } catch (\Exception $e) {
@@ -94,18 +96,5 @@ class QuoteDiscountHandler extends AbstractTotal
         }
 
         return $this;
-    }
-
-    public function fetch(Quote $quote, Total $total): ?array
-    {
-        $amount = $total->getTotalAmount($this->getCode());
-        if ($amount != 0) {
-            return [
-                'code' => $this->getCode(),
-                'title' => 'test',
-                'value' => $amount
-            ];
-        }
-        return null;
     }
 }
