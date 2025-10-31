@@ -6,4 +6,9 @@
             <item name="bh_quote_discount" instance="BubbleHouse\Integration\Model\Services\QuoteDiscountHandler" sort_order="450"/>
         </group>
     </section>
+    <section name="order_invoice">
+        <group name="totals">
+            <item name="bh_quote_discount" instance="BubbleHouse\Integration\Model\Invoice\Address\Total\InvoiceDiscount" sort_order="400"/>
+        </group>
+    </section>
 </config>

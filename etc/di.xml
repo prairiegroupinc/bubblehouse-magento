@@ -35,4 +35,11 @@
             <argument name="customerSession" xsi:type="object">Magento\Customer\Model\Session\Proxy</argument>
         </arguments>
     </type>
+    <type name="Magento\Sales\Model\Order\Invoice\Total">
+        <arguments>
+            <argument name="totals" xsi:type="array">
+                <item name="bh_quote_discount" xsi:type="string">BubbleHouse\Integration\Model\Invoice\Address\Total\InvoiceDiscount</item>
+            </argument>
+        </arguments>
+    </type>
 </config>
