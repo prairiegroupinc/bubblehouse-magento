@@ -12,6 +12,7 @@
                 <iframe_height>500</iframe_height>
                 <customer_export_enabled>1</customer_export_enabled>
                 <order_export_enabled>1</order_export_enabled>
+                <order_id_source>entity_id</order_id_source>
                 <api_host>app.bubblehouse.com</api_host>
             </general>
         </bubblehouse>

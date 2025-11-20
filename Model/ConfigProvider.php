@@ -22,6 +22,7 @@ class ConfigProvider
     public const IFRAME_STYLES_PATH = 'bubblehouse/general/iframe_styles';
     public const WIDGET_ID_PATH = 'bubblehouse/general/widget_id';
     public const DEV_MODE_PATH = 'bubblehouse/general/dev_mode';
+    public const ORDER_ID_SOURCE_PATH = 'bubblehouse/general/order_id_source';
 
     public const DEFAULT_API_HOST = 'app.bubblehouse.com';
 
@@ -170,5 +171,16 @@ class ConfigProvider
             $scopeType,
             $scopeCode
         );
+    }
+
+    public function getOrderIdSource(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        return $this->scopeConfig->getValue(
+            self::ORDER_ID_SOURCE_PATH,
+            $scopeType,
+            $scopeCode
+        ) ?? 'entity_id';
     }
 }

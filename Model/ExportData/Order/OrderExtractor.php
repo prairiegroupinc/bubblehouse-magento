@@ -30,7 +30,7 @@ class OrderExtractor
         $customer = $this->customerRepository->get($order->getCustomerEmail(), $store->getWebsiteId());
 
         $extractedData = [];
-        $extractedData['id'] = $order->getEntityId();
+        $extractedData['id'] = $this->getOrderId($order, $store->getId());
         $extractedData['order_time'] = TimeMapper::map($order->getCreatedAt());
         $extractedData['update_time'] = TimeMapper::map($order->getUpdatedAt());
         $extractedData['status'] = OrderStatusMapper::mapStatus($order->getStatus());
@@ -71,5 +71,17 @@ class OrderExtractor
     private function getOrderLines(OrderInterface $order): array
     {
         return $this->productsMapper->mapOrderItems($order);
+    }
+
+    private function getOrderId(OrderInterface $order, $storeId)
+    {
+        $source = $this->configProvider->getOrderIdSource($storeId);
+
+        return match ($source) {
+            'quote_id' => $order->getQuoteId(),
+            'ext_order_id' => $order->getExtOrderId(),
+            'increment_id' => $order->getIncrementId(),
+            default => $order->getEntityId(),
+        };
     }
 }
