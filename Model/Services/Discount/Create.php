@@ -233,11 +233,6 @@ class Create implements CreateDiscount4Interface
             $customer = $this->customerRepository->getById((int)$customerId);
             $quote = $this->cartRepository->get((int)$quoteId);
 
-            $items = $quote->getAllVisibleItems();
-            foreach ($items as $item) {
-                $this->logger->debug("XXY " . $item->getProductId() . ',' . $item->getQty() . ',' . $item->getPrice());
-            }
-
             $currentDiscountsJson = '';
             $quoteDiscountAttribute = $customer->getCustomAttribute('bh_quote_discounts');
             if ($quoteDiscountAttribute) {
@@ -255,9 +250,6 @@ class Create implements CreateDiscount4Interface
             $currentDiscounts[$quoteId] = $newDiscount;
 
             $updatedJson = $this->quoteDiscountService->serializeDiscounts($currentDiscounts);
-            $this->logger->error(print_r($newDiscount,true));
-            $this->logger->error(print_r($quoteId,true));
-            $this->logger->error(print_r($updatedJson,true));
             $this->quoteDiscountService->set($customerId, $updatedJson);
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());

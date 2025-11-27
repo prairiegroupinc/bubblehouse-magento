@@ -42,7 +42,6 @@ class QuoteDiscountHandler extends AbstractTotal
             return $this;
         }
 
-        $this->logger->debug("QuotaDiscountHandler: collect");
         if (!count($shippingAssignment->getItems())) {
             return $this;
         }
@@ -127,6 +126,7 @@ class QuoteDiscountHandler extends AbstractTotal
                 "discount.amount=" . (string)$discountAmount . " " .
                 "discount.amount_total=" . (string)$discountAmountTotal . " " .
                 "discount.code=" . (string)$discount->getCode() . " " .
+                "discount.label='" .$discountLabel . "' " .
                 "quote_hash=" . $currentHash
             );
 

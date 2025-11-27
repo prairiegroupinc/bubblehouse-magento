@@ -57,6 +57,10 @@ class QuoteDiscountData extends DataObject implements QuoteDiscountDataInterface
             $price = number_format((float)$item->getPrice(), 4, '.', '');
             $data[] = $item->getProductId() . ',' . $item->getQty() . ',' . $price;
         }
+        $couponCode = $quote->getCouponCode();
+        if ($couponCode) {
+            $data[] = 'coupon:' . $couponCode;
+        }
         $concatenated = implode('|', $data);
         return hash('sha256', $concatenated);
     }
