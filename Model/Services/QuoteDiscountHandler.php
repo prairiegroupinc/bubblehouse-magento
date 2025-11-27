@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Model\Services;
 
 use BubbleHouse\Integration\Model\Services\QuoteDiscountService;
+use BubbleHouse\Integration\Model\Data\QuoteDiscountData;
 use Magento\Customer\Api\CustomerRepositoryInterface;
 use Magento\Quote\Model\Quote;
 use Magento\Quote\Model\Quote\Address\Total;
@@ -50,8 +51,11 @@ class QuoteDiscountHandler extends AbstractTotal
             $customer = $this->customerRepository->getById((int)$customerId);
             $bhQuoteDiscountsAttribute = $customer->getCustomAttribute('bh_quote_discounts');
 
-
             if (!$bhQuoteDiscountsAttribute) {
+                $this->logger->warning(
+                    "[BH] {QuoteDiscountHandler/collect} no 'bh_quote_discounts' attr on customer -> skipping " .
+                    "customed.id=" . $customerId
+                );
                 return $this;
             }
 
@@ -64,34 +68,75 @@ class QuoteDiscountHandler extends AbstractTotal
             }
 
             $discount = $discounts[$quoteId];
+
+            $currentHash = QuoteDiscountData::calculateQuoteHash($quote);
+            $storedHash = $discount->getQuoteHash();
+            // In absence of better way of catching cart updates we just check hashed cart contents vs. what discount was issued for.
+            if ($storedHash !== $currentHash) {
+                $this->logger->warning(
+                    "[BH] {QuoteDiscountHandler/collect} hash mismatch (cart contents changed?) -> dropping discount " .
+                    "quote.id=" . $quote->getId() . " " .
+                    "stored_hash=" . $storedHash . " " .
+                    "current_hash=" . $currentHash
+                );
+                unset($discounts[$quoteId]);
+                $updatedJson = $this->quoteDiscountService->serializeDiscounts($discounts);
+                $this->quoteDiscountService->set($customerId, $updatedJson);
+                return $this;
+            }
+
             $discountAmount = $this->priceCurrency->convert((float)$discount->getAmount());
             $discountLabel = $discount->getDescription();
 
             // Combine with existing discounts.
             $discountAmountTotal = $discountAmount;
-            if($total->getDiscountAmount() < 0) {
+            if ($total->getDiscountAmount() < 0) {
                 $discountAmountTotal = -$total->getDiscountAmount() + $discountAmount;
                 $discountLabel       = $total->getDiscountDescription().', '.$discountLabel;
             }
 
+            if ($discountAmount <= 0) {
+                $this->logger->warning(
+                    "[BH] {QuoteDiscountHandler/collect} negative or zero discount detected -> skipping " .
+                    "quote.id=" . $quote->getId() . " " .
+                    "quote.subtotal=" . $total->getSubtotal() . " " .
+                    "discount.amount=" . (string)$discountAmount . " " .
+                    "discount.amount_total=" . (string)$discountAmountTotal . " " .
+                    "discount.code=" . (string)$discount->getCode()
+                );
+
+                return $this;
+            }
+
+            $subtotal = $total->getSubtotal() - $discountAmountTotal;
+            $baseSubtotal = $total->getBaseSubtotal() - $discountAmountTotal;
+
+            if ($subtotal < 0 || $baseSubtotal < 0) {
+                $this->logger->warning(
+                    "[BH] {QuoteDiscountHandler/collect} negative subtotal detected -> rounding to zero"
+                );
+
+                $subtotal     = max($subtotal, 0);
+                $baseSubtotal = max($baseSubtotal, 0);
+            }
+
             $this->logger->info(
-                "[BH] {QuoteDiscountHandler/collect} " .
+                "[BH] {QuoteDiscountHandler/collect} applying discount " .
                 "quote.id=" . $quote->getId() . " " .
                 "quote.subtotal=" . $total->getSubtotal() . " " .
                 "discount.amount=" . (string)$discountAmount . " " .
                 "discount.amount_total=" . (string)$discountAmountTotal . " " .
-                "discount.code=" . (string)$discount->getCode()
+                "discount.code=" . (string)$discount->getCode() . " " .
+                "quote_hash=" . $currentHash
             );
 
-            if ($discountAmount > 0) {
-                $total->addTotalAmount($this->getCode(), -$discountAmount);
-                $total->addBaseTotalAmount($this->getCode(), -$discountAmount);
-                $total->setSubtotalWithDiscount($total->getSubtotal() - $discountAmountTotal);
-                $total->setBaseSubtotalWithDiscount($total->getBaseSubtotal() - $discountAmountTotal);
-                $total->setDiscountAmount(-$discountAmountTotal);
-                $total->setBaseDiscountAmount(-$discountAmountTotal);
-                $total->setDiscountDescription($discountLabel);
-            }
+            $total->addTotalAmount($this->getCode(), -$discountAmount);
+            $total->addBaseTotalAmount($this->getCode(), -$discountAmount);
+            $total->setSubtotalWithDiscount($subtotal);
+            $total->setBaseSubtotalWithDiscount($baseSubtotal);
+            $total->setDiscountAmount(-$discountAmountTotal);
+            $total->setBaseDiscountAmount(-$discountAmountTotal);
+            $total->setDiscountDescription($discountLabel);
         } catch (\Exception $e) {
             $this->logger->alert($e->getMessage());
             throw new LocalizedException($e->getMessage());

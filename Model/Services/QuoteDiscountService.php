@@ -29,7 +29,8 @@ class QuoteDiscountService
                 $serializedData[$quoteId] = [
                     QuoteDiscountDataInterface::AMOUNT => $discount->getAmount(),
                     QuoteDiscountDataInterface::DESCRIPTION => $discount->getDescription(),
-                    QuoteDiscountDataInterface::CODE => $discount->getCode()
+                    QuoteDiscountDataInterface::CODE => $discount->getCode(),
+                    QuoteDiscountDataInterface::QUOTE_HASH => $discount->getQuoteHash()
                 ];
             }
         }
@@ -54,6 +55,7 @@ class QuoteDiscountService
                 $discount->setAmount((string) $discountData[QuoteDiscountDataInterface::AMOUNT]);
                 $discount->setDescription((string) $discountData[QuoteDiscountDataInterface::DESCRIPTION]);
                 $discount->setCode((string) ($discountData[QuoteDiscountDataInterface::CODE] ?? ""));
+                $discount->setQuoteHash((string) ($discountData[QuoteDiscountDataInterface::QUOTE_HASH] ?? ""));
                 $discounts[$quoteId] = $discount;
             }
         }

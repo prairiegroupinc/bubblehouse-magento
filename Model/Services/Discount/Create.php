@@ -29,6 +29,7 @@ use Magento\SalesRule\Model\Rule\Condition\Product;
 use Magento\SalesRule\Model\Rule\Condition\Product\Found;
 use Magento\Store\Model\StoreManagerInterface;
 use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Quote\Api\CartRepositoryInterface;
 
 class Create implements CreateDiscount4Interface
 {
@@ -44,6 +45,7 @@ class Create implements CreateDiscount4Interface
         private readonly CustomerRepositoryInterface $customerRepository,
         private readonly QuoteDiscountService $quoteDiscountService,
         private readonly \Psr\Log\LoggerInterface $logger,
+        private readonly CartRepositoryInterface $cartRepository,
     ) {
     }
 
@@ -229,6 +231,12 @@ class Create implements CreateDiscount4Interface
 
         try {
             $customer = $this->customerRepository->getById((int)$customerId);
+            $quote = $this->cartRepository->get((int)$quoteId);
+
+            $items = $quote->getAllVisibleItems();
+            foreach ($items as $item) {
+                $this->logger->debug("XXY " . $item->getProductId() . ',' . $item->getQty() . ',' . $item->getPrice());
+            }
 
             $currentDiscountsJson = '';
             $quoteDiscountAttribute = $customer->getCustomAttribute('bh_quote_discounts');
@@ -242,12 +250,15 @@ class Create implements CreateDiscount4Interface
             $newDiscount->setAmount($CreateDiscount4->getAmount() ?? '0.0000');
             $newDiscount->setDescription($CreateDiscount4->getTitle());
             $newDiscount->setCode($CreateDiscount4->getCode());
+            $newDiscount->bindToQuote($quote);
 
             $currentDiscounts[$quoteId] = $newDiscount;
 
             $updatedJson = $this->quoteDiscountService->serializeDiscounts($currentDiscounts);
+            $this->logger->error(print_r($newDiscount,true));
+            $this->logger->error(print_r($quoteId,true));
+            $this->logger->error(print_r($updatedJson,true));
             $this->quoteDiscountService->set($customerId, $updatedJson);
-
         } catch (\Exception $e) {
             $this->logger->error($e->getMessage());
             throw new \Exception('Failed to update customer quote discounts: ' . $e->getMessage());

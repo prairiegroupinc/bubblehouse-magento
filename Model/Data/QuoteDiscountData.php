@@ -38,4 +38,33 @@ class QuoteDiscountData extends DataObject implements QuoteDiscountDataInterface
     {
         return $this->setData(self::DESCRIPTION, $description);
     }
+
+    public function getQuoteHash(): string
+    {
+        return (string) $this->getData(self::QUOTE_HASH);
+    }
+
+    public function setQuoteHash(string $quoteHash): self
+    {
+        return $this->setData(self::QUOTE_HASH, $quoteHash);
+    }
+
+    public static function calculateQuoteHash($quote): string
+    {
+        $items = $quote->getAllVisibleItems();
+        $data = [];
+        foreach ($items as $item) {
+            $price = number_format((float)$item->getPrice(), 4, '.', '');
+            $data[] = $item->getProductId() . ',' . $item->getQty() . ',' . $price;
+        }
+        $concatenated = implode('|', $data);
+        return hash('sha256', $concatenated);
+    }
+
+    public function bindToQuote($quote): self
+    {
+        $hash = self::calculateQuoteHash($quote);
+        $this->setQuoteHash($hash);
+        return $this;
+    }
 }
