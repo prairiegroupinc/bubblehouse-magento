@@ -58,7 +58,7 @@ class TokenAuthCreate
 
     public function createShopToken(
         $scopeCode = null,
-        string $customerId = null,
+        ?string $customerId = null,
     ): string {
         $shopSlug = $customerId !== null
             ? $this->configProvider->getShopSlug($scopeCode) . '/' . $customerId
