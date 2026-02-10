@@ -48,6 +48,8 @@ class OrderExtractor
 
         $extractedData['amount_full'] = MonetaryMapper::map($amountFull);
         $extractedData['amount_spent'] = MonetaryMapper::map($amountSpent);
+        $extractedData['amount_taxes'] = MonetaryMapper::map((float) $order->getTaxAmount());
+        $extractedData['amount_shipping'] = MonetaryMapper::map((float) $order->getShippingAmount());
         $extractedData['items'] = $this->getOrderLines($order);
 
         $bhQuoteDiscountsAttribute = $customer->getCustomAttribute('bh_quote_discounts');
