@@ -22,10 +22,9 @@ class InitialExport
 
     public function execute(bool $force): int
     {
-        $exportData = [];
         $pageSize = 100;
         $page = 1;
-        $customerIds = [];
+        $count = 0;
 
         do {
             $collection = $this->customerCollectionFactory->create();
@@ -41,6 +40,7 @@ class InitialExport
                 break;
             }
 
+            $exportData = [];
             /** @var \Magento\Customer\Model\Customer $customer */
             foreach ($collection as $customer) {
                 $exportData[] = $this->customerExtractor::extract($customer->getDataModel());
@@ -54,17 +54,19 @@ class InitialExport
             );
 
             if ($result) {
+                $customerIds = [];
                 foreach ($exportData as $customer) {
                     $customerIds[] = $customer['id'];
                 }
 
                 $this->updateExportAttribute($customerIds, $connection);
+                $count += count($customerIds);
             }
 
             $page++;
         } while ($collection->count() >= $pageSize);
 
-        return count($customerIds);
+        return $count;
     }
 
     private function updateExportAttribute(
