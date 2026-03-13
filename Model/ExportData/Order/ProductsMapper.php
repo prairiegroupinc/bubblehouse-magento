@@ -22,12 +22,14 @@ class ProductsMapper
         $orderItems = $order->getAllVisibleItems();
 
         foreach ($orderItems as $orderedItem) {
+            $qty = (int)$orderedItem->getQtyOrdered();
+            $amountFull = $orderedItem->getPriceInclTax() * $qty;
+            $amountSpent = (float)$amountFull - (float)$orderedItem->getDiscountAmount();
+
             $mappedItem = [];
-            $mappedItem['quantity'] = (int)$orderedItem->getQtyOrdered();
-            $mappedItem['amount_full'] = MonetaryMapper::map($orderedItem->getPriceInclTax());
-            $mappedItem['amount_spent'] = MonetaryMapper::map(
-                (float)$orderedItem->getPriceInclTax() - (float)$orderedItem->getDiscountAmount()
-            );
+            $mappedItem['quantity'] = $qty;
+            $mappedItem['amount_full'] = MonetaryMapper::map($amountFull);
+            $mappedItem['amount_spent'] = MonetaryMapper::map($amountSpent);
             $mappedItem['product'] = $this->mapProduct($orderedItem);
             $mappedItems[] = $mappedItem;
         }
