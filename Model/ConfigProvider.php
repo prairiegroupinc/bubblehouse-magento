@@ -26,6 +26,9 @@ class ConfigProvider
 
     public const DEFAULT_API_HOST = 'app.bubblehouse.com';
 
+    public const META_TITLE = 'bubblehouse/seo/meta_title';
+    public const META_DESCRIPTION = 'bubblehouse/seo/meta_description';
+
     public function __construct(
         private readonly ScopeConfigInterface $scopeConfig
     ) {
@@ -79,6 +82,20 @@ class ConfigProvider
         $scopeType = ScopeInterface::SCOPE_STORE
     ): string {
         return $this->scopeConfig->getValue(self::SHOP_SLUG_PATH, $scopeType, $scopeCode) ?? '';
+    }
+
+    public function getMetaTitle(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        return $this->scopeConfig->getValue(self::META_TITLE, $scopeType, $scopeCode) ?? '';
+    }
+
+    public function getMetaDescription(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        return $this->scopeConfig->getValue(self::META_DESCRIPTION, $scopeType, $scopeCode) ?? '';
     }
 
     public function getTokenExpirationTime(

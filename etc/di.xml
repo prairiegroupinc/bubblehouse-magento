@@ -42,4 +42,9 @@
             </argument>
         </arguments>
     </type>
+    <type name="BubbleHouse\Integration\Controller\Rewards">
+        <arguments>
+            <argument name="configProvider" xsi:type="object">BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider</argument>
+        </arguments>
+    </type>
 </config>

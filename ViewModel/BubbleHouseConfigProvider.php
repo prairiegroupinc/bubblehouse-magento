@@ -82,6 +82,20 @@ class BubbleHouseConfigProvider implements ArgumentInterface
         return $this->configProvider->getApiHost($store->getId());
     }
 
+    public function getMetaTitle(): string
+    {
+        $store = $this->storeManager->getStore();
+
+        return $this->configProvider->getMetaTitle($store->getId());
+    }
+
+    public function getMetaDescription(): string
+    {
+        $store = $this->storeManager->getStore();
+
+        return $this->configProvider->getMetaDescription($store->getId());
+    }
+
     public function getWidgetId(): string
     {
         $store = $this->storeManager->getStore();

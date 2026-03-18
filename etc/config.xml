@@ -15,6 +15,10 @@
                 <order_id_source>entity_id</order_id_source>
                 <api_host>app.bubblehouse.com</api_host>
             </general>
+            <seo>
+                <meta_title></meta_title>
+                <meta_description></meta_description>
+            </seo>
         </bubblehouse>
     </default>
 </config>

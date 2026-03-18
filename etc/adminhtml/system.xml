@@ -71,6 +71,15 @@
                     <label>Enable Dev Mode</label>
                 </field>
             </group>
+            <group id="seo" translate="label" type="text" sortOrder="10" showInDefault="1"  showInWebsite="1" showInStore="1">
+                <label>SEO</label>
+                <field id="meta_title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Title</label>
+                </field>
+                <field id="meta_description" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Meta Description</label>
+                </field>
+            </group>
         </section>
     </system>
 </config>
