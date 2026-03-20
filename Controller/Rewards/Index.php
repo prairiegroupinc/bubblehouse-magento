@@ -22,8 +22,16 @@ class Index implements ActionInterface
     {
         $page = $this->pageFactory->create();
         $pageConfig = $page->getConfig();
-        $pageConfig->getTitle()->set($this->configProvider->getMetaTitle());
-        $pageConfig->setDescription($this->configProvider->getMetaDescription());
+
+        $metaTitle = $this->configProvider->getMetaTitle();
+        if ($metaTitle !== '') {
+            $pageConfig->getTitle()->set($metaTitle);
+        }
+
+        $metaDescription = $this->configProvider->getMetaDescription();
+        if ($metaDescription !== '') {
+            $pageConfig->setDescription($metaDescription);
+        }
 
         return $page;
     }
