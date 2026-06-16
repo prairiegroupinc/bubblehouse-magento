@@ -5,7 +5,9 @@
         <column name="id" xsi:type="int" nullable="false" identity="true" unsigned="true" comment="ID" />
         <column name="message_type" xsi:type="varchar" length="255" nullable="false" comment="Message Type (order/customer)" />
         <column name="message_body" xsi:type="text" nullable="false" comment="Message Body" />
-        <column name="status" xsi:type="smallint" nullable="false" default="0" comment="Export Status (0 = Failed, 1 = Success)" />
+        <column name="store_id" xsi:type="int" nullable="true" unsigned="true" comment="Store ID" />
+        <column name="website_id" xsi:type="int" nullable="true" unsigned="true" comment="Website ID" />
+        <column name="status" xsi:type="smallint" nullable="false" default="0" comment="Export Status (0 = Failed, 1 = Success, 2 = Skipped)" />
         <column name="created_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" comment="Created At" />
         <column name="updated_at" xsi:type="timestamp" nullable="false" default="CURRENT_TIMESTAMP" on_update="true" comment="Updated At" />
         <constraint xsi:type="primary" referenceId="PRIMARY">

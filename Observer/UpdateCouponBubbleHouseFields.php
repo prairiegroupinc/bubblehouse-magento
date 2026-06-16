@@ -53,7 +53,7 @@ class UpdateCouponBubbleHouseFields implements ObserverInterface
                         $this->ruleRepository->save($rule);
                     }
                 } catch (\Exception $e) {
-                    $this->logger->critical('Could not disable BubbleHouse coupon');
+                    $this->logger->critical('Bubblehouse: Could not disable BubbleHouse coupon');
                 }
             }
         }

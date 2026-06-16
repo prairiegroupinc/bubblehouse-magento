@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Plugin\Magento\Sales\Model\ResourceModel\Order;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\MessageQueue\PublisherInterface;
 use Magento\Sales\Model\ResourceModel\Order;
 use Psr\Log\LoggerInterface;
@@ -25,7 +24,9 @@ class OrderChangePlugin
         $object
     ) {
         /** @var \Magento\Sales\Model\Order $object */
-        if (!$this->configProvider->isOrderExportEnabled($object->getStoreId())) {
+        $storeId = (int)$object->getStoreId();
+
+        if ($storeId <= 0 || !$this->configProvider->canExportOrders($storeId)) {
             return $result;
         }
 

@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Block\Adminhtml\System\Config;
 
+use Magento\Backend\Block\Template\Context;
 use Magento\Config\Block\System\Config\Form\Field;
 use Magento\Framework\Data\Form\Element\AbstractElement;
-use Magento\Backend\Block\Template\Context;
 use Magento\Framework\UrlInterface;
 
-class ExportButton  extends Field
+class ExportButton extends Field
 {
     protected $_template = 'BubbleHouse_Integration::system/config/export_button.phtml';
 
@@ -28,7 +28,19 @@ class ExportButton  extends Field
 
     public function getAjaxUrl()
     {
-        return $this->urlBuilder->getUrl('bubblehouse/customer/export');
+        $params = [];
+        $store = $this->getRequest()->getParam('store');
+        $website = $this->getRequest()->getParam('website');
+
+        if ($store !== null && $store !== '') {
+            $params['store'] = $store;
+        }
+
+        if ($website !== null && $website !== '') {
+            $params['website'] = $website;
+        }
+
+        return $this->urlBuilder->getUrl('bubblehouse/customer/export', $params);
     }
 
     public function getButtonCaption()

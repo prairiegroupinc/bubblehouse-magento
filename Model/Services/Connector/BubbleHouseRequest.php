@@ -41,6 +41,10 @@ class BubbleHouseRequest
     ): bool {
 
         try {
+            if ($scopeCode === null || $scopeCode === '' || (int)$scopeCode <= 0) {
+                throw new LocalizedException(__('Cannot export BubbleHouse data without a Magento store scope.'));
+            }
+
             $shopToken = $this->tokenAuthCreate->createShopToken(
                 $scopeCode
             );
@@ -54,7 +58,7 @@ class BubbleHouseRequest
             $result = $this->serializer->unserialize($response->getBody());
         } catch (\Exception $exception) {
             $this->logger->critical(
-                __('Could not sync BubbleHouse Entity %1: ',
+                __('Bubblehouse: Could not sync BubbleHouse Entity %1: %2',
                     self::EXPORT_TYPES[$exportType],
                     $exception->getMessage()
                 )
@@ -74,7 +78,7 @@ class BubbleHouseRequest
             throw new LocalizedException(__('Please Add Shop Slug in Admin'));
         }
 
-        $uriPrefix = 'https://' . $this->configProvider->getApiHost() . self::PATH;
+        $uriPrefix = 'https://' . $this->configProvider->getApiHost($scopeCode) . self::PATH;
 
         return $uriPrefix . $shopSlug . '/' . self::EXPORT_TYPES[$exportType];
     }

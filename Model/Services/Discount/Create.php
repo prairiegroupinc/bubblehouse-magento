@@ -252,7 +252,7 @@ class Create implements CreateDiscount4Interface
             $updatedJson = $this->quoteDiscountService->serializeDiscounts($currentDiscounts);
             $this->quoteDiscountService->set($customerId, $updatedJson);
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->error('Bubblehouse: ' . $e->getMessage());
             throw new \Exception('Failed to update customer quote discounts: ' . $e->getMessage());
         }
     }

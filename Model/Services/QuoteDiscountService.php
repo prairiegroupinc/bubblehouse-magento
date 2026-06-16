@@ -76,7 +76,7 @@ class QuoteDiscountService
             $sql = "UPDATE $tableName SET value = ? WHERE attribute_id = ? AND entity_id = ?";
             $connection->query($sql, [$data, $attributeId, $customerId]);
         } catch (\Exception $e) {
-            $this->logger->error($e->getMessage());
+            $this->logger->error('Bubblehouse: ' . $e->getMessage());
         }
     }
 }

@@ -13,13 +13,40 @@ $formKey = $block->getFormKey(); // This gets the CSRF token
 <script>
     require(['jquery'], function($) {
         $('#export_customers_btn').click(function() {
-            if (confirm('Export all customers?')) {
+            var force = $('#export_customers_force_chk').prop('checked');
+
+            $.ajax({
+                url: '<?= $block->getAjaxUrl() ?>',
+                type: 'POST',
+                data: {
+                    form_key: '<?= $formKey ?>',
+                    force: force,
+                    count_only: true
+                },
+                showLoader: true,
+                success: function(response) {
+                    var count = parseInt(response.count, 10) || 0;
+                    var customerLabel = count === 1 ? 'customer' : 'customers';
+                    var confirmMessage = 'Export ' + count + ' ' + customerLabel + '?';
+
+                    if (!confirm(confirmMessage)) {
+                        return;
+                    }
+
+                    exportCustomers(force);
+                },
+                error: function(response) {
+                    alert(response.message);
+                }
+            });
+
+            function exportCustomers(force) {
                 $.ajax({
                     url: '<?= $block->getAjaxUrl() ?>',
                     type: 'POST',
                     data: {
                         form_key: '<?= $formKey ?>',
-                        force: $('#export_customers_force_chk').prop('checked')
+                        force: force
                     },
                     showLoader: true,
                     success: function(response) {

@@ -6,7 +6,6 @@ namespace BubbleHouse\Integration\Plugin\Magento\Customer\Model\ResourceModel\Cu
 
 use BubbleHouse\Integration\Model\ConfigProvider;
 use Magento\Customer\Model\ResourceModel\Customer;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\MessageQueue\PublisherInterface;
 use Psr\Log\LoggerInterface;
 
@@ -25,7 +24,9 @@ class CustomerChangePlugin
         $object
     ) {
         /** @var \Magento\Customer\Model\Customer $object */
-        if (!$this->configProvider->isCustomerExportEnabled($object->getStoreId())) {
+        $storeId = (int)$object->getStoreId();
+
+        if ($storeId <= 0 || !$this->configProvider->canExportCustomers($storeId)) {
             return $result;
         }
 

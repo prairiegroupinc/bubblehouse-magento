@@ -4,39 +4,54 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Model\ExportData\Customer;
 
+use BubbleHouse\Integration\Model\ConfigProvider;
 use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
 use BubbleHouse\Integration\Setup\Patch\Data\CreateCustomerExportAttribute;
-use Magento\Customer\Model\ResourceModel\Customer\CollectionFactory as CustomerCollectionFactory;
 use Magento\Eav\Model\Config;
-use Magento\Framework\App\Config\ScopeConfigInterface;
+use Magento\Framework\DB\Adapter\AdapterInterface;
 
 class InitialExport
 {
     public function __construct(
-        private readonly CustomerCollectionFactory $customerCollectionFactory,
+        private readonly CustomerExportCollection $customerExportCollection,
         private readonly CustomerExtractor $customerExtractor,
         private readonly BubbleHouseRequest $request,
-        private readonly Config $eavConfig
+        private readonly Config $eavConfig,
+        private readonly ExportScope $exportScopeResolver,
+        private readonly ConfigProvider $configProvider
     ) {
     }
 
-    public function execute(bool $force): int
+    public function execute(bool $force, ?array $scope = null): int
+    {
+        $count = 0;
+
+        foreach ($this->exportScopeResolver->expandToStoreScopes($scope) as $storeScope) {
+            $count += $this->executeStoreScope($force, $storeScope);
+        }
+
+        return $count;
+    }
+
+    private function executeStoreScope(bool $force, array $scope): int
     {
         $pageSize = 100;
         $page = 1;
         $count = 0;
+        $scopeCode = $this->exportScopeResolver->getConfigScopeCode($scope);
+
+        if ($scopeCode === null || $scopeCode <= 0 || !$this->configProvider->canExportCustomers($scopeCode)) {
+            return 0;
+        }
 
         do {
-            $collection = $this->customerCollectionFactory->create();
+            $collection = $this->customerExportCollection->create($force, $scope, true);
             $connection = $collection->getConnection();
-            $collection->addAttributeToSelect('*');
-            if (!$force) {
-                $collection->addAttributeToFilter(CreateCustomerExportAttribute::ATTRIBUTE_CODE, ['eq' => 0]);
-            }
             $collection->setPageSize($pageSize);
             $collection->setCurPage($page);
+            $collection->load();
 
-            if (!$collection->getSize()) {
+            if (!$collection->count()) {
                 break;
             }
 
@@ -49,39 +64,52 @@ class InitialExport
             $result = $this->request->exportData(
                 BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
                 $exportData,
-                $customer->getStoreId(),
+                $scopeCode,
                 true
             );
 
-            if ($result) {
-                $customerIds = [];
-                foreach ($exportData as $customer) {
-                    $customerIds[] = $customer['id'];
-                }
-
-                $this->updateExportAttribute($customerIds, $connection);
-                $count += count($customerIds);
+            if (!$result) {
+                break;
             }
 
-            $page++;
+            $customerIds = [];
+            foreach ($exportData as $customer) {
+                $customerIds[] = $customer['id'];
+            }
+
+            $this->updateExportAttribute($customerIds, $connection);
+            $count += count($customerIds);
+
+            if ($force) {
+                $page++;
+            }
         } while ($collection->count() >= $pageSize);
 
         return $count;
     }
 
-    private function updateExportAttribute(
-        array $customerIds,
-        \Magento\Framework\DB\Adapter\AdapterInterface $connection
-    ): void {
+    private function updateExportAttribute(array $customerIds, AdapterInterface $connection): void
+    {
+        if (!$customerIds) {
+            return;
+        }
+
         $bhExportedAttribute = $this->eavConfig->getAttribute(
             'customer',
             CreateCustomerExportAttribute::ATTRIBUTE_CODE
         );
         $attributeId = (int)$bhExportedAttribute->getId();
         $tableName = $connection->getTableName('customer_entity_int');
-        $placeholders = rtrim(str_repeat('?,', count($customerIds)), ',');
-        $sql = "UPDATE $tableName SET value = ? WHERE attribute_id = ? AND value = ? AND entity_id IN ($placeholders)";
-        $params = array_merge([1, $attributeId, 0], $customerIds);
-        $connection->query($sql, $params);
+        $rows = [];
+
+        foreach ($customerIds as $customerId) {
+            $rows[] = [
+                'attribute_id' => $attributeId,
+                'entity_id' => (int)$customerId,
+                'value' => 1,
+            ];
+        }
+
+        $connection->insertOnDuplicate($tableName, $rows, ['value']);
     }
 }

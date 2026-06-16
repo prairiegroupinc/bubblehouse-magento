@@ -120,6 +120,13 @@ class ConfigProvider
         );
     }
 
+    public function canExportOrders(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): bool {
+        return $this->isOrderExportEnabled($scopeCode, $scopeType);
+    }
+
     public function isCustomerExportEnabled(
         $scopeCode = null,
         $scopeType = ScopeInterface::SCOPE_STORE
@@ -133,6 +140,13 @@ class ConfigProvider
             $scopeType,
             $scopeCode
         );
+    }
+
+    public function canExportCustomers(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): bool {
+        return $this->isCustomerExportEnabled($scopeCode, $scopeType);
     }
 
     public function isCustomerBalanceEnabled(

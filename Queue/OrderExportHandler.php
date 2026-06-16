@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Queue;
 
+use BubbleHouse\Integration\Model\ConfigProvider;
 use BubbleHouse\Integration\Model\ExportData\Order\OrderExtractor;
 use BubbleHouse\Integration\Model\QueueLogFactory;
 use BubbleHouse\Integration\Model\ResourceModel\QueueLog as QueueLogResource;
 use BubbleHouse\Integration\Model\Services\Connector\BubbleHouseRequest;
 use Exception;
-use Magento\Framework\App\Config\ScopeConfigInterface;
 use Magento\Framework\Exception\LocalizedException;
 use Magento\Framework\Serialize\SerializerInterface;
-use Psr\Log\LoggerInterface;
 use Magento\Sales\Api\OrderRepositoryInterface;
+use Magento\Store\Model\StoreManagerInterface;
+use Psr\Log\LoggerInterface;
 
 class OrderExportHandler
 {
@@ -24,7 +25,9 @@ class OrderExportHandler
         private readonly OrderExtractor $orderExtractor,
         private readonly QueueLogResource $resource,
         private readonly QueueLogFactory $queueLogFactory,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        private readonly StoreManagerInterface $storeManager,
+        private readonly ConfigProvider $configProvider
     ) {
     }
 
@@ -32,6 +35,19 @@ class OrderExportHandler
     {
         try {
             $order = $this->orderRepository->get($orderId);
+            $storeId = (int)$order->getStoreId();
+
+            if ($storeId <= 0) {
+                $this->logger->warning('Bubblehouse: Skipped BubbleHouse order export without store scope: ' . $orderId);
+                return;
+            }
+
+            if (!$this->configProvider->canExportOrders($storeId)) {
+                $this->logger->warning(
+                    'Bubblehouse: Skipped BubbleHouse order export for disabled or incomplete store scope: ' . (string)$storeId
+                );
+                return;
+            }
 
             $extractedData = $this->orderExtractor->extract($order, (bool)$order->getData('is_deleted'));
             $data = $this->serializer->serialize($extractedData);
@@ -40,6 +56,8 @@ class OrderExportHandler
                 [
                     'message_type' => 'order',
                     'message_body' => $data,
+                    'store_id' => $storeId,
+                    'website_id' => (int)$this->storeManager->getStore($storeId)->getWebsiteId(),
                     'status' => 0
                 ]
             );
@@ -48,7 +66,7 @@ class OrderExportHandler
             $response = $this->bubbleHouseRequest->exportData(
                 BubbleHouseRequest::ORDER_EXPORT_TYPE,
                 $extractedData,
-                $order->getStoreId()
+                $storeId
             );
 
             if (!$response) {
@@ -59,7 +77,7 @@ class OrderExportHandler
             $this->resource->save($queueLog);
 
         } catch (Exception $e) {
-            $this->logger->error("Order Export Failed: " . $e->getMessage());
+            $this->logger->error("Bubblehouse: Order Export Failed: " . $e->getMessage());
             throw new LocalizedException(__('Bubblehouse export failed'));
         }
     }

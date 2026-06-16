@@ -52,7 +52,7 @@ class QuoteDiscountHandler extends AbstractTotal
 
             if (!$bhQuoteDiscountsAttribute) {
                 $this->logger->warning(
-                    "[BH] {QuoteDiscountHandler/collect} no 'bh_quote_discounts' attr on customer -> skipping " .
+                    "Bubblehouse: [BH] {QuoteDiscountHandler/collect} no 'bh_quote_discounts' attr on customer -> skipping " .
                     "customed.id=" . $customerId
                 );
                 return $this;
@@ -73,7 +73,7 @@ class QuoteDiscountHandler extends AbstractTotal
             // In absence of better way of catching cart updates we just check hashed cart contents vs. what discount was issued for.
             if ($storedHash !== $currentHash) {
                 $this->logger->warning(
-                    "[BH] {QuoteDiscountHandler/collect} hash mismatch (cart contents changed?) -> dropping discount " .
+                    "Bubblehouse: [BH] {QuoteDiscountHandler/collect} hash mismatch (cart contents changed?) -> dropping discount " .
                     "quote.id=" . $quote->getId() . " " .
                     "stored_hash=" . $storedHash . " " .
                     "current_hash=" . $currentHash
@@ -96,7 +96,7 @@ class QuoteDiscountHandler extends AbstractTotal
 
             if ($discountAmount <= 0) {
                 $this->logger->warning(
-                    "[BH] {QuoteDiscountHandler/collect} negative or zero discount detected -> skipping " .
+                    "Bubblehouse: [BH] {QuoteDiscountHandler/collect} negative or zero discount detected -> skipping " .
                     "quote.id=" . $quote->getId() . " " .
                     "quote.subtotal=" . $total->getSubtotal() . " " .
                     "discount.amount=" . (string)$discountAmount . " " .
@@ -112,7 +112,7 @@ class QuoteDiscountHandler extends AbstractTotal
 
             if ($subtotal < 0 || $baseSubtotal < 0) {
                 $this->logger->warning(
-                    "[BH] {QuoteDiscountHandler/collect} negative subtotal detected -> rounding to zero"
+                    "Bubblehouse: [BH] {QuoteDiscountHandler/collect} negative subtotal detected -> rounding to zero"
                 );
 
                 $subtotal     = max($subtotal, 0);
@@ -120,7 +120,7 @@ class QuoteDiscountHandler extends AbstractTotal
             }
 
             $this->logger->info(
-                "[BH] {QuoteDiscountHandler/collect} applying discount " .
+                "Bubblehouse: [BH] {QuoteDiscountHandler/collect} applying discount " .
                 "quote.id=" . $quote->getId() . " " .
                 "quote.subtotal=" . $total->getSubtotal() . " " .
                 "discount.amount=" . (string)$discountAmount . " " .
@@ -138,7 +138,7 @@ class QuoteDiscountHandler extends AbstractTotal
             $total->setBaseDiscountAmount(-$discountAmountTotal);
             $total->setDiscountDescription($discountLabel);
         } catch (\Exception $e) {
-            $this->logger->alert($e->getMessage());
+            $this->logger->alert('Bubblehouse: ' . $e->getMessage());
             throw new LocalizedException($e->getMessage());
         }
 

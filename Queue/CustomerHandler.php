@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace BubbleHouse\Integration\Queue;
 
+use BubbleHouse\Integration\Model\ConfigProvider;
 use BubbleHouse\Integration\Model\ExportData\Customer\CustomerExtractor;
 use BubbleHouse\Integration\Model\ResourceModel\QueueLog as QueueLogResource;
 use BubbleHouse\Integration\Model\QueueLogFactory;
@@ -25,7 +26,8 @@ class CustomerHandler
         private readonly BubbleHouseRequest $bubbleHouseRequest,
         private readonly QueueLogResource $resource,
         private readonly QueueLogFactory $queueLogFactory,
-        private readonly SerializerInterface $serializer
+        private readonly SerializerInterface $serializer,
+        private readonly ConfigProvider $configProvider
     ) {
     }
 
@@ -35,6 +37,25 @@ class CustomerHandler
             /** @var Customer $customerModel */
             $customerModel = $this->customerFactory->create();
             $this->customerRepository->load($customerModel, $customerId);
+            $storeId = (int)$customerModel->getStoreId();
+
+            if (!$customerModel->getId()) {
+                $this->logger->warning('Bubblehouse: Skipped BubbleHouse customer export for missing customer: ' . $customerId);
+                return;
+            }
+
+            if ($storeId <= 0) {
+                $this->logger->warning('Bubblehouse: Skipped BubbleHouse customer export without store scope: ' . $customerId);
+                return;
+            }
+
+            if (!$this->configProvider->canExportCustomers($storeId)) {
+                $this->logger->warning(
+                    'Bubblehouse: Skipped BubbleHouse customer export for disabled or incomplete store scope: ' . (string)$storeId
+                );
+                return;
+            }
+
             $extractedData = CustomerExtractor::extract($customerModel->getDataModel());
             $data = $this->serializer->serialize($extractedData);
             $queueLog = $this->queueLogFactory->create();
@@ -42,6 +63,8 @@ class CustomerHandler
                 [
                     'message_type' => 'customer',
                     'message_body' => $data,
+                    'store_id' => $storeId,
+                    'website_id' => $customerModel->getWebsiteId() ? (int)$customerModel->getWebsiteId() : null,
                     'status' => 0
                 ]
             );
@@ -50,7 +73,7 @@ class CustomerHandler
             $response = $this->bubbleHouseRequest->exportData(
                 BubbleHouseRequest::CUSTOMER_EXPORT_TYPE,
                 $extractedData,
-                $customerModel->getStoreId()
+                $storeId
             );
 
             if (!$response) {
@@ -60,7 +83,7 @@ class CustomerHandler
             $queueLog->setStatus(1);
             $this->resource->save($queueLog);
         } catch (Exception $e) {
-            $this->logger->error("Customer Export Failed: " . $e->getMessage());
+            $this->logger->error("Bubblehouse: Customer Export Failed: " . $e->getMessage());
             throw new LocalizedException(__('Bubblehouse export failed'));
         }
     }
