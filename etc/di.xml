@@ -20,6 +20,10 @@
                 type="BubbleHouse\Integration\Model\Services\Discount\Create"/>
     <preference for="BubbleHouse\Integration\Api\Data\QuoteDiscountDataInterface"
                 type="BubbleHouse\Integration\Model\Data\QuoteDiscountData"/>
+    <preference for="BubbleHouse\Integration\Api\UpdateCustomerRewardsInterface"
+                type="BubbleHouse\Integration\Model\Services\Inbound\UpdateCustomerRewards"/>
+    <preference for="BubbleHouse\Integration\Api\Data\UpdateCustomerRewardsResultInterface"
+                type="BubbleHouse\Integration\Model\Data\UpdateCustomerRewardsResult"/>
     <type name="BubbleHouse\Integration\Model\Services\QuoteDiscountService">
         <arguments>
             <argument name="serializer" xsi:type="object">Magento\Framework\Serialize\Serializer\Json</argument>
