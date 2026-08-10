@@ -82,14 +82,14 @@ Inbound Requests
 Bubblehouse can send authorized requests to:
 
 ```text
-POST /rest/V1/bubblehouse/customer-attribute-updates
+POST /rest/V1/bubblehouse/update-customer-attributes
 ```
 
 Create and activate a Magento integration with the **Bubblehouse Integration > Receive Bubblehouse Requests**
 resource, then send its access token as a bearer token over HTTPS:
 
 ```bash
-curl --request POST 'https://magento.example/rest/V1/bubblehouse/customer-attribute-updates' \
+curl --request POST 'https://magento.example/rest/V1/bubblehouse/update-customer-attributes' \
     --header 'Authorization: Bearer <integration-access-token>' \
     --header 'Content-Type: application/json' \
     --data '{"customer_email":"customer@example.com","website_id":2,"bh_tier":"Gold","bh_points_balance":125.5}'
