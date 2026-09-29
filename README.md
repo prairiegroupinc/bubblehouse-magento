@@ -79,6 +79,10 @@ Final Notes
 Inbound Requests
 ----------------
 
+Coupon creation requires an authorized Magento access token with the
+**Bubblehouse Integration > Bubblehouse SalesRules** permission. Configure the
+Bubblehouse integration to include this token in its requests.
+
 Bubblehouse can send authorized requests to:
 
 ```text
