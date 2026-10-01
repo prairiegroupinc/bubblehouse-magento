@@ -5,7 +5,6 @@ namespace BubbleHouse\Integration\Model;
 use BubbleHouse\Integration\ViewModel\BubbleHouseConfigProvider;
 use Magento\Checkout\Model\ConfigProviderInterface;
 use Magento\Cms\Block\Widget\Block;
-use Magento\Csp\Helper\CspNonceProvider;
 
 class CheckoutConfigProvider implements ConfigProviderInterface
 {
@@ -30,7 +29,7 @@ class CheckoutConfigProvider implements ConfigProviderInterface
         ];
    }
 
-    public function getNonce(): string
+    public function getNonce(): ?string
     {
         return $this->cspNonceProvider->generateNonce();
     }

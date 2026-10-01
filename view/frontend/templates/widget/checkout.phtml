@@ -14,6 +14,10 @@ use Magento\Framework\View\Helper\SecureHtmlRenderer;
 $configProvider = $block->getData('config_provider');
 $nonce = $block->getData('nonce');
 $devMode = $configProvider->isDevMode() ? 'true' : 'false';
+$nonceOption = $nonce === null ? '' : ', nonce: ' . json_encode(
+    $nonce,
+    JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT
+);
 ?>
 
 <div id="bubblehouse-checkout-widget"></div>
@@ -33,7 +37,7 @@ $devMode = $configProvider->isDevMode() ? 'true' : 'false';
                     host: "{$configProvider->getApiHost()}",
                     token: "{$configProvider->getCustomerToken()}"
                 },
-                { dev: { enabled: {$devMode} }, nonce: "{$nonce}" },
+                { dev: { enabled: {$devMode} }{$nonceOption} },
             )
         }
     SCRIPT,
