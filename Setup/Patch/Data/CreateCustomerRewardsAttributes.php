@@ -47,7 +47,9 @@ class CreateCustomerRewardsAttributes implements DataPatchInterface
                 'type' => 'varchar',
                 'label' => 'BubbleHouse Tier',
                 'input' => 'text',
-                'validate_rules' => ['max_text_length' => self::TIER_MAX_LENGTH],
+                'validate_rules' => json_encode([
+                    'max_text_length' => self::TIER_MAX_LENGTH,
+                ]),
                 'position' => 1002,
             ],
             self::POINTS_BALANCE_ATTRIBUTE_CODE => [
