@@ -13,6 +13,8 @@ class ConfigProvider
     public const SHOP_SLUG_PATH = 'bubblehouse/general/shop_slug';
     public const ORDER_EXPORT_PATH = 'bubblehouse/general/order_export_enabled';
     public const CUSTOMER_EXPORT_PATH = 'bubblehouse/general/customer_export_enabled';
+    public const CUSTOMER_GROUPS_PATH = 'bubblehouse/general/customer_groups';
+    public const CUSTOMER_TAG_PATH = 'bubblehouse/general/customer_tag';
     public const TOKEN_EXPIRATION_TIME_PATH = 'bubblehouse/general/token_expiration_time';
     public const SHARED_SECRET_PATH = 'bubblehouse/general/shared_secret';
     public const API_HOST_PATH = 'bubblehouse/general/api_host';
@@ -147,6 +149,45 @@ class ConfigProvider
         $scopeType = ScopeInterface::SCOPE_STORE
     ): bool {
         return $this->isCustomerExportEnabled($scopeCode, $scopeType);
+    }
+
+    /**
+     * Return the configured customer group IDs, including the guest group (0).
+     *
+     * @return int[]
+     */
+    public function getCustomerGroupIds(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): array {
+        $value = $this->scopeConfig->getValue(self::CUSTOMER_GROUPS_PATH, $scopeType, $scopeCode);
+        $values = is_array($value) ? $value : explode(',', (string)$value);
+        $groupIds = [];
+
+        foreach ($values as $id) {
+            $id = trim((string)$id);
+            if ($id !== '' && ctype_digit($id)) {
+                $groupIds[] = (int)$id;
+            }
+        }
+
+        return array_values(array_unique($groupIds));
+    }
+
+    public function isCustomerGroupSelected(
+        ?int $groupId,
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): bool {
+        return $groupId !== null
+            && in_array($groupId, $this->getCustomerGroupIds($scopeCode, $scopeType), true);
+    }
+
+    public function getCustomerTag(
+        $scopeCode = null,
+        $scopeType = ScopeInterface::SCOPE_STORE
+    ): string {
+        return trim((string)$this->scopeConfig->getValue(self::CUSTOMER_TAG_PATH, $scopeType, $scopeCode));
     }
 
     public function isCustomerBalanceEnabled(

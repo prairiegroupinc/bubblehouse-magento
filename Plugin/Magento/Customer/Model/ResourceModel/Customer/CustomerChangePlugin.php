@@ -50,7 +50,9 @@ class CustomerChangePlugin
             return $result;
         }
 
-        $changed = $object->isDeleted() || $object->getOrigData("updated_at") !== $object->getData("updated_at");
+        $changed = $object->isDeleted()
+            || $object->getOrigData('updated_at') !== $object->getData('updated_at')
+            || (string)$object->getOrigData('group_id') !== (string)$object->getData('group_id');
 
         if ($changed) {
             $this->publisher->publish('bubblehouse.integration.customer.export', (int) $object->getEntityId());

@@ -71,6 +71,23 @@
                     <label>Enable Dev Mode</label>
                 </field>
             </group>
+            <group id="customer_tag" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Customer tag</label>
+                <comment>Configure a Bubblehouse tag based on the customer's Magento group. The tag is intended to be added for selected groups and removed for other groups during customer export.</comment>
+                <field id="customer_groups" translate="label comment" type="multiselect" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Customer Groups</label>
+                    <comment>Select the groups whose customers should receive the tag.</comment>
+                    <config_path>bubblehouse/general/customer_groups</config_path>
+                    <frontend_model>BubbleHouse\Integration\Block\Adminhtml\System\Config\CustomerGroups</frontend_model>
+                    <source_model>BubbleHouse\Integration\Model\Config\Source\CustomerGroups</source_model>
+                    <can_be_empty>1</can_be_empty>
+                </field>
+                <field id="customer_tag" translate="label comment" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Customer Tag</label>
+                    <comment>Enter the tag to synchronize, for example magento-member. A blank tag disables tagging. With a tag configured and no groups selected, the tag should be removed during customer export.</comment>
+                    <config_path>bubblehouse/general/customer_tag</config_path>
+                </field>
+            </group>
             <group id="seo" translate="label" type="text" sortOrder="10" showInDefault="1"  showInWebsite="1" showInStore="1">
                 <label>SEO</label>
                 <field id="meta_title" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">

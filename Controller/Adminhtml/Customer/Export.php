@@ -47,10 +47,10 @@ class Export extends Action
                 $force,
                 $scope
             );
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             $this->logger->critical('Bubblehouse: could not export BH customers: ' . $exception->getMessage());
-            return $result->setData([
-                'message ' => 'could not export BH customers: ' . $exception->getMessage()
+            return $result->setHttpResponseCode(500)->setData([
+                'message' => 'Could not export customers: ' . $exception->getMessage()
             ]);
         }
 

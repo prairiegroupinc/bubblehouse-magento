@@ -27,7 +27,8 @@ class CustomerHandler
         private readonly QueueLogResource $resource,
         private readonly QueueLogFactory $queueLogFactory,
         private readonly SerializerInterface $serializer,
-        private readonly ConfigProvider $configProvider
+        private readonly ConfigProvider $configProvider,
+        private readonly CustomerExtractor $customerExtractor
     ) {
     }
 
@@ -56,7 +57,7 @@ class CustomerHandler
                 return;
             }
 
-            $extractedData = CustomerExtractor::extract($customerModel->getDataModel());
+            $extractedData = $this->customerExtractor->extractForExport($customerModel->getDataModel(), $storeId);
             $data = $this->serializer->serialize($extractedData);
             $queueLog = $this->queueLogFactory->create();
             $queueLog->setData(

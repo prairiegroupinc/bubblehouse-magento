@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace BubbleHouse\Integration\Cron;
 
 use BubbleHouse\Integration\Model\ConfigProvider;
+use BubbleHouse\Integration\Model\ExportData\Customer\CustomerExtractor;
+use Magento\Customer\Api\CustomerRepositoryInterface;
+use Magento\Framework\Exception\NoSuchEntityException;
 use BubbleHouse\Integration\Model\QueueLog;
 use BubbleHouse\Integration\Model\ResourceModel\QueueLog as QueueLogResource;
 use BubbleHouse\Integration\Model\ResourceModel\QueueLog\Collection;
@@ -27,7 +30,9 @@ class RetryFailedMessages
         private readonly QueueLogResource $resource,
         private readonly LoggerInterface $logger,
         private readonly State $appState,
-        private readonly ConfigProvider $configProvider
+        private readonly ConfigProvider $configProvider,
+        private readonly CustomerRepositoryInterface $customerRepository,
+        private readonly CustomerExtractor $customerExtractor
     ) {
     }
 
@@ -91,6 +96,16 @@ class RetryFailedMessages
                             . (string)$scopeCode
                         );
                         continue;
+                    }
+
+                    if ($type === BubbleHouseRequest::CUSTOMER_EXPORT_TYPE) {
+                        try {
+                            $customer = $this->customerRepository->getById((int)($data['id'] ?? 0));
+                        } catch (NoSuchEntityException $exception) {
+                            $this->markSkipped($queueLog, 'customer no longer exists');
+                            continue;
+                        }
+                        $data = $this->customerExtractor->extractForExport($customer, $scopeCode);
                     }
 
                     $response = $this->request->exportData(

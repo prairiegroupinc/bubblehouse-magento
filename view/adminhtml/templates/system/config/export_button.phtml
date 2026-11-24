@@ -12,12 +12,21 @@ $formKey = $block->getFormKey(); // This gets the CSRF token
 
 <script>
     require(['jquery'], function($) {
+        function showExportError(xhr) {
+            var response = xhr.responseJSON;
+            var status = xhr.status ? ' (HTTP ' + xhr.status + ')' : '';
+            alert(response && response.message
+                ? response.message
+                : 'Customer export failed' + status + '. Please try again or check Magento logs.');
+        }
+
         $('#export_customers_btn').click(function() {
             var force = $('#export_customers_force_chk').prop('checked');
 
             $.ajax({
                 url: '<?= $block->getAjaxUrl() ?>',
                 type: 'POST',
+                dataType: 'json',
                 data: {
                     form_key: '<?= $formKey ?>',
                     force: force,
@@ -35,15 +44,14 @@ $formKey = $block->getFormKey(); // This gets the CSRF token
 
                     exportCustomers(force);
                 },
-                error: function(response) {
-                    alert(response.message);
-                }
+                error: showExportError
             });
 
             function exportCustomers(force) {
                 $.ajax({
                     url: '<?= $block->getAjaxUrl() ?>',
                     type: 'POST',
+                    dataType: 'json',
                     data: {
                         form_key: '<?= $formKey ?>',
                         force: force
@@ -52,9 +60,7 @@ $formKey = $block->getFormKey(); // This gets the CSRF token
                     success: function(response) {
                         alert(response.message || 'Export completed.');
                     },
-                    error: function(response) {
-                        alert(response.message);
-                    }
+                    error: showExportError
                 });
             }
         });

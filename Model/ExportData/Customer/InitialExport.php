@@ -58,7 +58,7 @@ class InitialExport
             $exportData = [];
             /** @var \Magento\Customer\Model\Customer $customer */
             foreach ($collection as $customer) {
-                $exportData[] = $this->customerExtractor::extract($customer->getDataModel());
+                $exportData[] = $this->customerExtractor->extractForExport($customer->getDataModel(), $scopeCode);
             }
 
             $result = $this->request->exportData(
